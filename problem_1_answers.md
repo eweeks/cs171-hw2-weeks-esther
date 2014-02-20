@@ -83,4 +83,61 @@ in a short period won't reflect on such a scale, even on the individual graphs. 
 be viewed more clearly with a feature that allowed to zoom in on a smaller period of time,
 and possibly also changing the scale to accommodate this. 
 
+Commits:
 
+Who is the audience?
+
+The audience is collaborators on a specific project, probably once again geared towards
+the project manager, although there might be situations when it could be helpful for other
+members of a project to view. This shows a yearly overview of the project commits, keeping
+track of which weeks had the most commits, and also divides this down further into days. 
+As this doesn't show specific data for any contributors, but general information for the
+project, it is probably most relevant for those either managing the project or those 
+very involved in the current year. 
+
+What data is used?
+
+The data comes from that specific repository. It is the number of commits and the dates of
+these with in the current year. It is keeping track both of the number of commits per week,
+but also the number of commits each day. 
+
+How can you get the data using the GitHub API?
+
+Make a call to that repositories info, get a list of commits, with dates included for the
+current year.
+  //api.github.com/repos/username/repository_name ... then somehow narrow 
+this down...  //api.github.com/repos/username/repository_name/commits will give list of 
+commits... also has the dates
+
+What happens if suddenly a contributor pushes many commits in a short time interval? 
+How would you address this particular issue? 
+
+This graph doesn't have a way of keeping track of contributors. If a contributor pushed
+many commits in a short time, it would create a spike for that day and probably that week
+in the visuals, but would not show who made those. If viewing this information was important
+you could create a tooltip that would show up when you hover over either the bar or the circles
+on bottom graph. This could give you more of a break down of when these commits were made and
+by whom. 
+
+Code Frequency:
+
+Who is the audience?
+
+Code frequency doesn't keep track of contributors either, so I feel this also would be primarily 
+useful by project managers and those closely involved with the project in the past year. 
+This graph gives an overview of additions and deletions on this project, and would be of 
+value to anyone interested in the yearly changes for that specific project. 
+
+What data is used?
+
+The data for this is similar to the data used in the commits graph. It also is specific to
+the repository, using the dates of the commits in the past year, but this time also using
+the number of number of lines added and deleted in each commit.
+
+How can you get the data using the GitHub API?
+
+Make a call to that repositories info, get a list of commits, with dates included for the
+current year.
+  //api.github.com/repos/username/repository_name ... then somehow narrow 
+this down...  //api.github.com/repos/username/repository_name/commits will give list of 
+commits... also has the dates..don't see anything on additions or deletions though...
