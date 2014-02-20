@@ -64,15 +64,9 @@ It is also keeping the dates on all this data, and shows on what days what happe
 
 How can you get the data using the GitHub API?
 
-Make a call to that repositories info, get a list of commits, deletions and additions for 
-the whole history of the project, with dates included. Also need to get which users 
-contributed to that repository and keep track of which commits, deletions, etc were
-theirs. 
-  //api.github.com/repos/username/repository_name ... then somehow narrow 
-this down...  //api.github.com/repos/username/repository_name/commits will give list of 
-commits... also has the dates and names, 
- //api.github.com/repos/username/repository_name/collaborators will give list
-of collaborators, 
+For the data on the bottom of the page: 
+https://api.github.com/repos/:owner/:repo/stats/contributors, I think for the top of
+the page you could use this as well, and just add up the total commits as you go.
 
 What happens if suddenly a contributor pushes many commits in a short time interval? 
 How would you address this particular issue? 
@@ -102,12 +96,7 @@ these with in the current year. It is keeping track both of the number of commit
 but also the number of commits each day. 
 
 How can you get the data using the GitHub API?
-
-Make a call to that repositories info, get a list of commits, with dates included for the
-current year.
-  //api.github.com/repos/username/repository_name ... then somehow narrow 
-this down...  //api.github.com/repos/username/repository_name/commits will give list of 
-commits... also has the dates
+https://api.github.com/repos/:owner/:repo/stats/commit_activity
 
 What happens if suddenly a contributor pushes many commits in a short time interval? 
 How would you address this particular issue? 
@@ -135,12 +124,7 @@ the repository, using the dates of the commits in the past year, but this time a
 the number of number of lines added and deleted in each commit.
 
 How can you get the data using the GitHub API?
-
-Make a call to that repositories info, get a list of commits, with dates included for the
-current year.
-  //api.github.com/repos/username/repository_name ... then somehow narrow 
-this down...  //api.github.com/repos/username/repository_name/commits will give list of 
-commits... also has the dates..don't see anything on additions or deletions though...
+https://api.github.com/repos/:owner/:repo/stats/code_frequency
 
 What happens if suddenly a contributor pushes many commits in a short time interval? 
 How would you address this particular issue? 
@@ -172,10 +156,7 @@ associated with each.
   
 How can you get the data using the GitHub API?
 
-Make a call to that repositories info, get a list of commits, with dates for all.
-  //api.github.com/repos/username/repository_name ... then somehow narrow 
-this down...  //api.github.com/repos/username/repository_name/commits will give list of 
-commits... also has the dates..
+https://api.github.com/repos/:owner/:repo/stats/punch_card
 
 What happens if suddenly a contributor pushes many commits in a short time interval? 
 How would you address this particular issue? 
@@ -204,7 +185,12 @@ files changes, number of additions and deletions, and unresolved conversations.
  
  How can you get the data using the GitHub API?
  
- Make a call to that repositories info, get a list of commits, with dates for all.
-  //api.github.com/repos/username/repository_name ... then somehow narrow 
-this down...  //api.github.com/repos/username/repository_name/commits will give list of 
-commits... also has the dates..
+ 
+ user commits for week: /repos/:owner/:repo/stats/contributors  - then filter out current week?
+ closed issues and current issues? Can sort by a time /repos/:owner/:repo/issues
+ 
+ 
+ Network Graph:
+ 
+ 
+ 
