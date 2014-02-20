@@ -25,7 +25,7 @@ just in your master branch in your fork).
 
 How can you get the data using the GitHub API?
 
-Make a call to that users info, get a list of all there commits for that year, opened issues,
+Make a call to that users info, get a list of all their commits for that year, opened issues,
 and proposed pull requests.  //api.github.com/users/username/events ... then somehow narrow 
 this down... 
 
@@ -41,4 +41,46 @@ and when the personal scale would reset. How many commits would it take to chang
 marked as more to less, for example. If this suddenly changes, this could present a very 
 different graph for a user. Maybe there is some way to alert to user to the change in scale or
 reflect the current scale in the view. 
+
+Contributors:
+
+Who is the audience?
+
+Audience seems to be contributors to a certain project, mostly directed to the project
+manager. The graph shows all of the commits, additions and deletions made over the life of
+that specific repository. It also shows all the contributors and their contributions. This 
+gives a good overview of the whole project in terms of when the most activity has occurred
+on it, who has contributed the most, and when. As it is not uncommon for contributors to
+come and go on project work, based on which pieces they are working on, this is probably 
+most valuable for the project manager. It could also be valuable for contributors on the
+project to see who else has been working, and maybe get a feel for their own contributions.
+
+What data is used?
+
+The graph is using data from the whole history of a repository, showing the number of
+commits, code deletions and code additions. It is showing this data from the master, 
+as well as each contributors individual data, including commits, deletions and additions. 
+It is also keeping the dates on all this data, and shows on what days what happened. 
+
+How can you get the data using the GitHub API?
+
+Make a call to that repositories info, get a list of commits, deletions and additions for 
+the whole history of the project, with dates included. Also need to get which users 
+contributed to that repository and keep track of which commits, deletions, etc were
+theirs. 
+  //api.github.com/repos/username/repository_name ... then somehow narrow 
+this down...  //api.github.com/repos/username/repository_name/commits will give list of 
+commits... also has the dates and names, 
+ //api.github.com/repos/username/repository_name/collaborators will give list
+of collaborators, 
+
+What happens if suddenly a contributor pushes many commits in a short time interval? 
+How would you address this particular issue? 
+
+This doesn't show up well on this graph, especially on projects that have been around for
+a long time, the graphs time will reflect mostly months in these cases, and many commits 
+in a short period won't reflect on such a scale, even on the individual graphs. This may
+be viewed more clearly with a feature that allowed to zoom in on a smaller period of time,
+and possibly also changing the scale to accommodate this. 
+
 
