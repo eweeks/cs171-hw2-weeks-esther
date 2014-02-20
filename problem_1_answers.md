@@ -141,3 +141,70 @@ current year.
   //api.github.com/repos/username/repository_name ... then somehow narrow 
 this down...  //api.github.com/repos/username/repository_name/commits will give list of 
 commits... also has the dates..don't see anything on additions or deletions though...
+
+What happens if suddenly a contributor pushes many commits in a short time interval? 
+How would you address this particular issue? 
+
+It would probably show as a spike on the graph, either a spike of additions or deletions, 
+unless there is a lot of general activity on that repository, then as the scale is set
+to show the trends through out the year, it would probably be lost in the curve of the 
+data. As this graph aslo doesn't show the contributors who made these commits, it
+doesn't really address this. If you wanted to show the contributors who added the 
+data, you could add a click function that would allow for clicking on the graph and 
+getting more detail of who made those changes in the selected area. 
+
+Punch Card:
+
+Who is the audience?
+Punch card shows general data for the whole repository, with nothing specific to the 
+contributors. Once again, I believe it is most useful for the project managers though also
+with situations when it would be of interest to other contributors on the project. This is a 
+useful graph for those who are interested it what time and days most of the work was done, 
+as it graphs the commits based on day and time. This could be useful in situations where 
+you are either looking for a time when the most people are working or a time when they probably
+will not be. 
+
+What data is used?
+
+This graph uses commit data from the specific repository, it seems, across the entire history of
+the repository, not just a year. It is using both a count of commits as well as a day and hour
+associated with each. 
+  
+How can you get the data using the GitHub API?
+
+Make a call to that repositories info, get a list of commits, with dates for all.
+  //api.github.com/repos/username/repository_name ... then somehow narrow 
+this down...  //api.github.com/repos/username/repository_name/commits will give list of 
+commits... also has the dates..
+
+What happens if suddenly a contributor pushes many commits in a short time interval? 
+How would you address this particular issue? 
+
+If it is enough commits, it might show up in relation to the size of the "punch" on the
+graph, and the date and time will be recorded and affect the graph. Possibly, this might
+make it seem like there is more activity on the repository at a certain time and day, but
+if the repository is recording a long enough period, this probably will not skew the data
+too much. Once again, if this is something you wanted to show, it could be done by showing
+additional data on click or on a hover. 
+
+Pulse:
+
+Who is the audience?
+
+Pulse gives a lot of current information on the project activity and status. I would say it
+is very useful for anyone currently working on or managing a repository. It seems especially
+geared towards contributors, as it shows new issues, closed issues, pull requests, merge 
+requests, number of contributors and number of commits each has made, etc. 
+
+What data is used?
+
+There is a lot of data on this page. This page uses merged and opened pull requests, 
+closed and opened issues, contributors and number of commits each has made, number of 
+files changes, number of additions and deletions, and unresolved conversations. 
+ 
+ How can you get the data using the GitHub API?
+ 
+ Make a call to that repositories info, get a list of commits, with dates for all.
+  //api.github.com/repos/username/repository_name ... then somehow narrow 
+this down...  //api.github.com/repos/username/repository_name/commits will give list of 
+commits... also has the dates..
