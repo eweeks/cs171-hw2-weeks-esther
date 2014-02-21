@@ -58,9 +58,12 @@ graph.nodes = d3.range(nb_nodes).map(function() {
   return { cat:Math.floor(nb_cat*Math.random()) }; 
 })
 
-console.log(data[0].commit);
 var k = data.map(function(d, i) { return data[i].commit});
-console.log(k);
+console.log(k+" is ");
+
+var p = data.map(function(d, i) { return data[i].parents});
+console.log(p);
+
 graph.nodes.map(function(d, i) {
 
   graph.nodes.map(function(e, j) {
