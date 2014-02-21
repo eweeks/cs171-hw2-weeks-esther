@@ -238,9 +238,21 @@ What is the role of interaction for this visualization? Would a static graph hav
 sufficient?
 With this much data, (or at least the potential for it) the interaction is important. The
 data can potential cover a large time span and the interaction allows you to scroll through
-it to see the history of the whole repository. 
+it to see the history of the whole repository. A static graph would either have to be 
+much larger, or much smaller and tighter to show the same amount of data. 
+The interaction also helps to keep the graph cleaner and less cluttered. The labels, for
+example are only visible when the nodes are hovered, which is great to get the information
+ when needed but cleaner view when not needed. Viewers also have the option to resort the 
+ graph by contributor, allowing for a different view of the same data, something that 
+ wouldn't be possible in one static graph.  
 
 What happens if many new developers suddenly join the project and push commits for the 
 first time? How would you preserve the graph's readability in such a situation?
- 
+ The graph in that area could get very cluttered. You would have a lot of nodes in one area
+ show the commits, but also a lot of lines and arrows heading to about the same area. 
+ You would have to be sure the lines and nodes weren't overlapping, or so close together
+ that they were not longer readable. This chart does this to some extent, the lines are
+ not always straight, and seem to make jogs to avoid some overlap. Another way to 
+ add clarity could be highlighting user lines when hovered, and changing the opacity of
+ the ones that are not being hovered. 
  
