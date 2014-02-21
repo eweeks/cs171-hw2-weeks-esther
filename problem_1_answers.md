@@ -25,9 +25,12 @@ just in your master branch in your fork).
 
 How can you get the data using the GitHub API?
 
-Make a call to that users info, get a list of all their commits for that year, opened issues,
-and proposed pull requests.  //api.github.com/users/username/events ... then somehow narrow 
-this down... 
+Make a call to that users info, get a list of all their commits:
+  //api.github.com/users/username/events
+  
+  Once you have this data, then you can search and find the the number of commits, (listed
+  under PushEvents) the number of Issues Events, Pull Request Events, for each day in the
+  year. 
 
 What happens if suddenly a contributor pushes many commits in a short time interval? 
 How would you address this particular issue?
@@ -64,9 +67,9 @@ It is also keeping the dates on all this data, and shows on what days what happe
 
 How can you get the data using the GitHub API?
 
-For the data on the bottom of the page: 
-https://api.github.com/repos/:owner/:repo/stats/contributors, I think for the top of
-the page you could use this as well, and just add up the total commits as you go.
+
+https://api.github.com/repos/:owner/:repo/stats/contributors, 
+For the top of the page you could use this as well, and just add up the total commits.
 
 What happens if suddenly a contributor pushes many commits in a short time interval? 
 How would you address this particular issue? 
@@ -185,12 +188,50 @@ files changes, number of additions and deletions, and unresolved conversations.
  
  How can you get the data using the GitHub API?
  
+ User commits for week, authors and how many: 
+ 	https://api.github.com/repos/:owner/:repo/stats/contributors  
+ 	Then filter this data for the current week?
+ Closed issues and current issues:
+	https://api.github.com/repos/:owner/:repo/issues/events
+ Active pull requests
+ 	https://api.github.com/repos/:owner/:repo/pulls 
+ Releases published
+ 	https://api.github.com/repos/:owner/:repo/releases
  
- user commits for week: /repos/:owner/:repo/stats/contributors  - then filter out current week?
- closed issues and current issues? Can sort by a time /repos/:owner/:repo/issues
  
+What happens if suddenly a contributor pushes many commits in a short time interval? 
+How would you address this particular issue? 
+
+You can set the Pulse area to show statistics up to a month, and down to 24 hours. If a 
+contributor pushed a lot of commits in a short interval, this fact would be most noticeable
+if it was recent, on the shorter time scales. It would show up on the authors graph in each
+view, and you would see that that author had made a lot of commits, but it doesn't show
+more detail as to when, except that the data for the entire page is filtered by 24 hours,
+3 days, 1 week, or 1 month. If you wanted to show when this happened, you could allow for
+more filtering options, or even show the date and times of the commits in the bars tool 
+tip. 
  
  Network Graph:
  
+ Who is the audience?
+ Workers and project managers on that repository. As it seems GitHub, means it to e a
+ sort of working to-do list, and shows what currently has not been merged
+ with the master, and who is working on it, it seems that those closely
+ involved with the whole project and knowing who may be working on what.  
+ 
+ What data is used?
+ The commit information from that repository. 
+ 
+ How can you get the data using the GitHub API? 
+ repos/:owner/
+ 
+What happens if suddenly a contributor pushes many commits in a short time interval? 
+How would you address this particular issue? 
+ 
+What is the role of interaction for this visualization? Would a static graph have been 
+sufficient?
+
+What happens if many new developers suddenly join the project and push commits for the 
+first time? How would you preserve the graph's readability in such a situation?
  
  
