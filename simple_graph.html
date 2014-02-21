@@ -55,7 +55,7 @@ var nb_nodes = 100, nb_cat = 10;
 var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits", function(error, data){
 
 graph.nodes = data.map(function(d, i) {  
-  return { commit: data[i].commit } 
+  return { sha: data[i].sha, commit: data[i].commit } 
 }); 
 
 //var k = data.map(function(d, i) { return data[i].commit});
@@ -64,24 +64,28 @@ graph.nodes = data.map(function(d, i) {
 //var p = data.map(function(d, i) { return data[i].parents});
 //console.log(p);
 
-data.map(function(d, i) {
+graph.nodes.map(function(d, i) {
 //goes through the data array
  data[i].parents.map(function(e, j) {
     //for each data item, selects the parents, individually
     //then need to push parents to own link item, and
     //save the sha as the source
-      graph.links.push({"source": d.sha, "target": d.parents[j] })
+    graph.nodes.map(function(l, m) {
+    console.log( l)
+    	if(l.sha == data[i].parents[j].sha){
+      graph.links.push({"source": i	, "target": m })
 		 //console.log(d.parents);
 		//console.log(parents);
-		// console.log("e is" + e);
-		 console.log(graph.links);
-		 
+		console.log("e is" + j);
+		 //console.log(graph.links);
+		}
+		}) 
   })
   //console.log(graph.links);
 })
 
-//console.log(graph);
-/*
+console.log(graph);
+
 // Generate the force layout
 var force = d3.layout.force()
     .size([width, height])
@@ -216,7 +220,7 @@ var node = svg.selectAll(".node")
 node.append("circle")
     .attr("r", 5)
 
-force_layout();*/
+force_layout();
 });
 </script>
 </body>
