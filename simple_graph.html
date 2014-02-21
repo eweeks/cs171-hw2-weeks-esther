@@ -52,11 +52,15 @@ var fill = d3.scale.category10();
 var graph = {nodes:[], links:[]};
 
 var nb_nodes = 100, nb_cat = 10;
+var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits", function(error, data){
 
 graph.nodes = d3.range(nb_nodes).map(function() {  
   return { cat:Math.floor(nb_cat*Math.random()) }; 
 })
 
+console.log(data[0].commit);
+var k = data.map(function(d, i) { return data[i].commit});
+console.log(k);
 graph.nodes.map(function(d, i) {
 
   graph.nodes.map(function(e, j) {
@@ -201,7 +205,7 @@ node.append("circle")
     .attr("r", 5)
 
 force_layout();
-
+});
 </script>
 </body>
 </html>
