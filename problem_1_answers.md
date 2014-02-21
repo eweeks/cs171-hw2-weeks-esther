@@ -214,22 +214,31 @@ tip.
  Network Graph:
  
  Who is the audience?
- Workers and project managers on that repository. As it seems GitHub, means it to e a
- sort of working to-do list, and shows what currently has not been merged
- with the master, and who is working on it, it seems that those closely
- involved with the whole project and knowing who may be working on what.  
+ The contributors and project managers for that repository. As it seems GitHub, means this
+ graph to be a working to-do list, and it shows what currently has not been merged
+ with the master, and gives an idea who is working what, all things that would be relevant
+ for people are involved with the whole project to know.  
  
  What data is used?
- The commit information from that repository. 
+ The commit information from that repository. It is using the authors of each commit, 
+ it is also showing the data on branches, including merges and pulls.   
  
  How can you get the data using the GitHub API? 
- repos/:owner/
+ https://api.github.com/repos/:owner/:repo/commits
  
 What happens if suddenly a contributor pushes many commits in a short time interval? 
 How would you address this particular issue? 
- 
+It seems that this graph handles this fairly well, it evenly spaces each commit, so the
+nodes don't bunch up on each other. If there area a lot of commits in a day, it seems
+to expand the available space in order to make room for the nodes. I can be a bit deceiving
+this way, because it isn't clear always what the time scale is, or when the commits were
+made, but this also may not be one of the problems this graph was trying to solve. 
+
 What is the role of interaction for this visualization? Would a static graph have been 
 sufficient?
+With this much data, (or at least the potential for it) the interaction is important. The
+data can potential cover a large time span and the interaction allows you to scroll through
+it to see the history of the whole repository. 
 
 What happens if many new developers suddenly join the project and push commits for the 
 first time? How would you preserve the graph's readability in such a situation?
