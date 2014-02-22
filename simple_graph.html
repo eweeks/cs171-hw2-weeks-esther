@@ -57,14 +57,24 @@ var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha=
 
 
 graph.nodes = data.map(function(d, i) {  
-  return { sha: data[i].sha, commit: data[i].commit, branch: names[0] } 
+  return { sha: data[i].sha, commit: data[i].commit, branch: names[0], date: data[i].commit.author.date } 
 }); 
 
 //var k = data.map(function(d, i) { return data[i].commit});
 //console.log(k+" is ");
 
 //var p = data.map(function(d, i) { return data[i].parents});
-//console.log(p);
+//console.log(Date.parse(graph.nodes[1].commit.author.date));
+//sort here?
+
+graph.nodes.map(function(d, i){
+	d.date=Date.parse(graph.nodes[i].date);
+	console.log(d.date);
+	graph.nodes.sort(function(a, b){
+		return d3.ascending(a.date, b.date);
+	});
+});
+//console.log(graph);
 
 graph.nodes.map(function(d, i) {
 //goes through the data array
@@ -93,9 +103,17 @@ graph.nodes.map(function(d, i) {
 //}); 
 
 var t = data.map(function(d, i) {  
-  return graph.nodes.push({ sha: data[i].sha, commit: data[i].commit,  branch: names[1] }) 
+  return graph.nodes.push({ sha: data[i].sha, commit: data[i].commit,  branch: names[1],
+  			 date: Date.parse(data[i].commit.author.date) }); 
 }); 
 
+graph.nodes.map(function(d, i){
+	//d.date=Date.parse(graph.nodes[i].date);
+	//console.log(d.date);
+	graph.nodes.sort(function(a, b){
+		return d3.ascending(a.date, b.date);
+	});
+});
 //var k = data.map(function(d, i) { return data[i].commit});
 //console.log(k+" is ");
 
@@ -122,6 +140,13 @@ t.map(function(d, i) {
   });
 
 console.log(graph);
+
+//console.log(graph.nodes[0].branch);
+
+//d3.selectAll("circle").style("fill", function(d) {  
+//		console.log("di is "+d); 
+//	return fill("blue"); });
+
 
 // Generate the force layout
 var force = d3.layout.force()
@@ -156,13 +181,44 @@ function force_layout() {
       .start();
 }
 
+var xScale = d3.scale.ordinal()
+                .domain(d3.range(graph.nodes.length))
+                .rangeRoundBands([0, width], 10);
+                console.log(graph.nodes.length);
+
+var min = d3.min(graph.nodes, function(d){
+	return d.date;
+});
+console.log(min);
+
+var max = d3.max(graph.nodes, function(d){
+	return d.date;
+});
+
+var tScale = d3.time.scale();
+tScale.domain([min, max]);
+
+
 function line_layout() {
 
   force.stop();
 
   graph.nodes.forEach(function(d, i) {
-    d.y = height/2;
-  })
+    //console.log(graph.nodes[i].branch);
+     d.x = tScale(i);
+    if(graph.nodes[i].branch=="master"){
+    	d.y = height/2;
+    	//d.x = xScale(i);
+    }else{
+    	d.y = (height/2)+15;
+    	 //d.x = xScale(i);
+    }
+    //d.x = xScale(i);
+  });
+  //node
+   //.attr("x", function(d, i) {
+     // return xScale(d.x);         // <-- Set x values
+   //})
 
   graph_update(500);
 }
@@ -256,8 +312,13 @@ var node = svg.selectAll(".node")
 
 node.append("circle")
     .attr("r", 5)
+    .append("title")
+   .text(function(d, i) {
+        return d.branch;
+   });
 
 force_layout();
+line_layout();
   });
 });
 </script>
