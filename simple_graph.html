@@ -52,10 +52,12 @@ var fill = d3.scale.category10();
 var graph = {nodes:[], links:[]};
 
 var nb_nodes = 100, nb_cat = 10;
-var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits", function(error, data){
+var names = ["gh-pages", "master"]
+var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[0], function(error, data){
+
 
 graph.nodes = data.map(function(d, i) {  
-  return { sha: data[i].sha, commit: data[i].commit } 
+  return { sha: data[i].sha, commit: data[i].commit, branch: names[0] } 
 }); 
 
 //var k = data.map(function(d, i) { return data[i].commit});
@@ -71,18 +73,53 @@ graph.nodes.map(function(d, i) {
     //then need to push parents to own link item, and
     //save the sha as the source
     graph.nodes.map(function(l, m) {
-    console.log( l)
+    //console.log( l)
     	if(l.sha == data[i].parents[j].sha){
       graph.links.push({"source": i	, "target": m })
 		 //console.log(d.parents);
 		//console.log(parents);
-		console.log("e is" + j);
+		//console.log("e is" + j);
+		 //console.log(graph.links);
+		}
+		}) 
+  });
+  });
+  console.log(graph);
+  
+  var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[1], function(error, data){
+  //console.log(graph.links);
+ // graph.nodes = data.map(function(d, i) {  
+ // return { sha: data[i].sha, commit: data[i].commit } 
+//}); 
+
+var t = data.map(function(d, i) {  
+  return graph.nodes.push({ sha: data[i].sha, commit: data[i].commit,  branch: names[1] }) 
+}); 
+
+//var k = data.map(function(d, i) { return data[i].commit});
+//console.log(k+" is ");
+
+//var p = data.map(function(d, i) { return data[i].parents});
+//console.log(p);
+
+t.map(function(d, i) {
+//goes through the data array
+ data[i].parents.map(function(e, j) {
+    //for each data item, selects the parents, individually
+    //then need to push parents to own link item, and
+    //save the sha as the source
+    graph.nodes.map(function(l, m) {
+    //console.log( l)
+    	if(l.sha == data[i].parents[j].sha){
+      graph.links.push({"source": i	, "target": m })
+		 //console.log(d.parents);
+		//console.log(parents);
+		//console.log("e is" + j);
 		 //console.log(graph.links);
 		}
 		}) 
   })
-  //console.log(graph.links);
-})
+  });
 
 console.log(graph);
 
@@ -221,6 +258,7 @@ node.append("circle")
     .attr("r", 5)
 
 force_layout();
+  });
 });
 </script>
 </body>
