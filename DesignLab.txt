@@ -1,0 +1,34 @@
+Part 1. Analysis
+
+The D3 page has a lot more contributions compared to the other GitHub graphs and as a consequence has a lot
+of branches and commits for many users. THere are aslo a lot of users who aren't very active, or not very
+active recently, leaving large blank spots on the pages that is awkward to scroll through. Both D3 and Caleydo
+have rather long time lines, CS171's is shorter with more frequent commits, making it seem more condensed.
+D3's page has large x and y dimensions, Caleydo is more stretched across the x, with not as much y. 
+CS171 has less in both dimensions. 
+
+Attributes: project contributors, commits, in order of when committed, merges and branches
+
+Other relevant attributes might be: Commit size, additions, deletions, current issues,
+most active recent areas, active contributors, total daily commits
+
+Filters that might be relevant: those who made commits, most active contributors, 
+
+Roles:
+	Caleydo: used for seeing what other branches are being developed and by who? Keeping
+	track for merges?
+	D3: Maybe more specific to contributors wanting to see activities on the repository, 
+	or what commits they may not personal be current on. Also valuable for the project 
+	manager keeping track of project status, but because its so large unlike Caleydo, 
+	it is harder to get an overview of the development. With the D3 graph
+	 it seems there is more of a need to already know what is going on. 
+	CS171: Most useful, for the class group, especially TA's, instructors, and graders. 
+	Could be useful, keeping track of updates and changes. With this graph I think it's
+	less about developing features and more about managing information and data. Roles
+	specific to this graph: students, graders, instructors, TF
+
+Roles in all graphs: Manager, Viewers, Contributors, Interested Contributors
+
+Task: Overview, status checks on: commits, branches, merges, contributors,  checking on 
+what have to do, who's working on what, perhaps checking for duplicate issues, amount
+of activity, 

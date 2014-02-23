@@ -245,7 +245,7 @@ d3.select("input[value=\"time\"]").on("click", time);
 
 
 // build the arrow.
-svg.append("svg:defs").selectAll("marker")
+/*svg.append("svg:defs").selectAll("marker")
     .data(["end"])      // Different link/path types can be defined here
   .enter().append("svg:marker")    // This section adds in the arrows
     .attr("id", String)
@@ -256,13 +256,38 @@ svg.append("svg:defs").selectAll("marker")
     .attr("markerHeight", 6)
     .attr("orient", "auto")
   .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
+    .attr("d", "M0,-5L10,0L0,5");*/
+    
 
+             
+//var lineData = [{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+offset_y},
+ //				{x:d.target.x, y:d.target.y+offset_y}, {x:d.target.x, y:d.target}];
+ 				
+/*var line = d3.svg.line()
+            .x(function(d) { return d.source.x; })
+            .y(function(d) { return d.source.y; })
+			.x(function(d) { return d.target.x; })
+            .y(function(d) { return d.target.y; })
+           ;*/
+    
+function line(d){ 
+	d3.svg.line()
+            .x(function(d) { return d.x; })
+            .y(function(d) { return d.y; })
+             .interpolate("linear");
+
+}
+        
 var link = svg.selectAll(".link")
               .data(graph.links)
             .enter().append("path")
-              .attr("class", "link")
-              .attr("marker-end", "url(#end)");
+            .attr("d", function(d){
+            var lineData = [{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+5},
+ 			{x:d.target.x, y:d.target.y+5}, {x:d.target.x, y:d.target}];
+            		return line(lineData, d);
+            		})
+            .attr("class", "link")
+              //.attr("marker-end", "url(#end)");
 
 var node = svg.selectAll(".node")
               .data(graph.nodes)
