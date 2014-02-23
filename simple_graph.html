@@ -8,7 +8,7 @@
   }
 
   .node {
-    fill: #66CC66;
+    /*fill: #66CC66;*/
     stroke: #000;
     stroke-width: 1px;
   }
@@ -212,7 +212,7 @@ function line_layout() {
     	d.y = height/2;
     	//d.x = xScale(i);
     }else{
-    	d.y = (height/2)+15;
+    	d.y = (height/2)+30;
     	 //d.x = xScale(i);
     }
     //d.x = xScale(i);
@@ -314,6 +314,25 @@ var node = svg.selectAll(".node")
 
 node.append("circle")
     .attr("r", 5)
+    .attr("fill", function(d) {
+		if(d.branch=="master"){
+			return "blue";
+		}else{
+			return "#66CC66";
+		}
+   })
+   .on("mouseover", function(d) {
+   		d3.select(this).attr("fill", "red");
+   })
+   .on("mouseout", function(d){
+   		d3.select(this).attr("fill", function(d) {
+			if(d.branch=="master"){
+				return "blue";
+			}else{
+				return "#66CC66";
+			}
+		});
+   })
     .append("title")
    .text(function(d, i) {
         return d.branch;
