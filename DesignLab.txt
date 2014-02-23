@@ -31,4 +31,20 @@ Roles in all graphs: Manager, Viewers, Contributors, Interested Contributors
 
 Task: Overview, status checks on: commits, branches, merges, contributors,  checking on 
 what have to do, who's working on what, perhaps checking for duplicate issues, amount
-of activity, 
+of activity.
+
+Focus for Project?
+Role: Contributors
+Tasks: Status check on activity on repository, viewing current activity with other users,
+	viewing current issues, viewing commits, branches, merges, 
+	
+	
+Part 3:
+In our online group discussion, we didn't pick one design or sketch, it wasn't really
+the most practical given the online situation, but we did have common components that 
+we agreed were important. They are:
+1. Being able to see an overview of the repository
+2. Showing more about the amount done with each commit, for example the additions and
+deletions.
+3. Being able to filter out inactive users, to focus on important activity.
+ 
