@@ -170,7 +170,7 @@ function graph_update(delay) {
         return "translate("+d.x+","+d.y+")"; 
       });
 }
-console.log(graph.links[1].source);
+//console.log(graph.links[1].source);
 
 d3.select("input[value=\"force\"]").on("click", force_layout);
 d3.select("input[value=\"random\"]").on("click", random_layout);
@@ -194,7 +194,7 @@ var link = svg.selectAll(".link")
               .data(graph.links)
             .enter().append("line")
               .attr("class", function(d){
-              	console.log(d.source.x);
+              	//console.log(d.source.x);
               	return "link";
               });
 

@@ -192,13 +192,13 @@ function force_layout() {
 var xScale = d3.scale.ordinal()
                 .domain(d3.range(graph.nodes.length))
                 .rangeRoundBands([0, width], 1);
-                //console.log(graph.nodes.length);
+                console.log(graph.nodes.length);
 
 var min = d3.min(graph.nodes, function(d){
 	return d.date;
 });
 
-//console.log(min);
+console.log(min);
 
 var max = d3.max(graph.nodes, function(d){
 	return d.date;
@@ -254,36 +254,17 @@ function category_size() {
 }
 
 function graph_update(delay) {
-	
-	      
-var line=  d3.svg.line()
-			.x(function(d) { return d.x; })
-			.y(function(d) { return d.y; })
-			.interpolate("linear"); 
-	  
-	  
-	 /* var lineData = [ {x:d.source.x, y:d.source.y}, 
-				{x:d.source.x, y:d.source.y+5},
-				{x:d.target.x, y:d.target.y+5}, 
-				{x:d.target.x, y:d.target} ]; */
 
   link.transition().duration(delay)
       .attr("x1", function(d) { return d.target.x; })
       .attr("y1", function(d) { return d.target.y; })
       .attr("x2", function(d) { return d.source.x; })
-      .attr("y2", function(d) { return d.source.y; })
-      .attr("d", function(d){
-      			return line([{x:d.target.x, y:d.target.y}, 
-				{x:d.target.x, y:d.target.y+10},
-				{x:d.source.x, y:d.source.y+10}, 
-				{x:d.source.x, y:d.source.y} ])
-				});
+      .attr("y2", function(d) { return d.source.y; });
 
   node.transition().duration(delay)
       .attr("transform", function(d) { 
         return "translate("+d.x+","+d.y+")"; 
       });
-    console.log(graph);
 }
 
 d3.select("input[value=\"linear\"]").on("click", line_layout );
@@ -304,23 +285,10 @@ svg.append("svg:defs").selectAll("marker")
   	.append("svg:path")
     .attr("d", "M0,-5L10,0L0,5");
     
-console.log("It is "+ graph.links[0].source.n);
-
-/*var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
- 	           { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
-                 { "x": 80,  "y": 5},  { "x": 100, "y": 60}];*/
-   
-
-    
-var line=  d3.svg.line()
-			.x(function(d) { return d.x; })
-			.y(function(d) { return d.y; })
-			.interpolate("linear");    
      
 var link = svg.selectAll(".link")
             .data(graph.links)
-            .enter().append("path")
-            //.attr("d", line(lineData))
+            .enter().append("line")
             .attr("class", "link")
             .attr("marker-end", "url(#end)");
 
