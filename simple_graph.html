@@ -46,9 +46,24 @@ var fill = d3.scale.category10();
 var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
-var names = ["gh-pages", "master"]
+var names = [ ];
 
-var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[0], function(error, data){
+//Get Branch Data
+
+/*var branchD = d3.json("https://api.github.com/repos/Snugug/north/branches", function(error, data){
+		names = data.map(function(d, i){
+			return data[i].name;
+		})
+		console.log(names);
+		dataset;
+});*/
+console.log(names[0]);
+
+var branchD = d3.json("https://api.github.com/repos/Snugug/north/branches", function(error, data){
+		names = data.map(function(d, i){
+			return data[i].name;
+		});
+  var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[0], function(error, data){
 
 
 graph.nodes = data.map(function(d, i) {  
@@ -100,7 +115,11 @@ data.map(function(d, i){
 	})
 });
 console.log(parents);
+set_links();
 
+
+function set_links(){
+	//sets up links
 graph.nodes.map(function(d, i){
 	graph.nodes[i].parents.map(function(l, m){
 		graph.nodes.map(function(e, j){
@@ -111,6 +130,7 @@ graph.nodes.map(function(d, i){
 	})
 })
 
+}
 
 console.log(graph);
 
@@ -216,7 +236,7 @@ var line=  d3.svg.line()
       .attr("transform", function(d) { 
         return "translate("+d.x+","+d.y+")"; 
       });
-    console.log(graph);
+    //console.log(graph);
 }
 
 d3.select("input[value=\"linear\"]").on("click", line_layout );
@@ -237,7 +257,7 @@ svg.append("svg:defs").selectAll("marker")
   	.append("svg:path")
     .attr("d", "M0,-5L10,0L0,5");
     
-console.log("It is "+ graph.links[0].source.n);
+//console.log("It is "+ graph.links[0].source.n);
 
     
 var line=  d3.svg.line()
@@ -287,6 +307,8 @@ force_layout();
 line_layout();
   });
 });
+});
+
 </script>
 </body>
 </html>
