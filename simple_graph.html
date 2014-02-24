@@ -47,58 +47,30 @@ var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
 var names = [ ];
+var remaining = 1
 
 //Get Branch Data
 
-/*var branchD = d3.json("https://api.github.com/repos/Snugug/north/branches", function(error, data){
-		names = data.map(function(d, i){
-			return data[i].name;
-		})
-		console.log(names);
-		dataset;
-});*/
-console.log(names[0]);
 
-var branchD = d3.json("https://api.github.com/repos/Snugug/north/branches", function(error, data){
-		names = data.map(function(d, i){
-			return data[i].name;
+var branchD = d3.json("https://api.github.com/repos/Snugug/north/branches", function(error, data1){
+		names = data1.map(function(d, i){
+			return data1[i].name;
 		});
-  var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[0], function(error, data){
-
-
-graph.nodes = data.map(function(d, i) {  
-  return { sha: data[i].sha, commit: data[i].commit, branch: names[0], date: data[i].commit.author.date,
-  parents: data[i].parents } 
-}); 
-
-
-graph.nodes.map(function(d, i){
-	d.date=Date.parse(graph.nodes[i].date);
-	//console.log(d.date);
-	graph.nodes.sort(function(a, b){
-		return d3.ascending(a.date, b.date);
-	});
+	if(! --remaining) commitD();
 });
-//console.log(graph);
-data.map(function(d, i){
-	data[i].parents.map(function(e, j) {
-		parents.parents.push({"parents":e });
-		parents.source.push({"source":data[i].sha});
-	})
-})
 
-console.log(parents);
+function commitD(){
+	remaining = names.length;
+	names.forEach(function(d, i){
+	
+  var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[i], function(error, data){
 
-  console.log(graph);
-  
-  var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[1], function(error, data){
- 
-
-var t = data.map(function(d, i) {  
-  return graph.nodes.push({ sha: data[i].sha, commit: data[i].commit,  branch: names[1],
-  			 date: Date.parse(data[i].commit.author.date),
-  			 parents: data[i].parents}); 
+console.log(names[i]);
+data.map(function(e, j) {  
+  graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names[i], date: Date.parse(data[j].commit.author.date),
+  parents: data[j].parents } );
 }); 
+
 
 graph.nodes.map(function(d, i){
 	//d.date=Date.parse(graph.nodes[i].date);
@@ -113,10 +85,18 @@ data.map(function(d, i){
 		parents.parents.push({"parents":e });
 		parents.source.push({"source":data[i].sha});
 	})
-});
-console.log(parents);
-set_links();
+})
 
+ if(! --remaining) map();
+});
+})
+
+}
+
+
+function map (){
+set_links();
+//console.log(graph);
 
 function set_links(){
 	//sets up links
@@ -305,9 +285,8 @@ node.append("circle")
 
 force_layout();
 line_layout();
-  });
-});
-});
+}
+
 
 </script>
 </body>
