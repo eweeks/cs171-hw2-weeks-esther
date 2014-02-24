@@ -134,7 +134,7 @@ t.map(function(d, i) {
   });
 
 console.log(graph);
-
+//console.log(graph.links[1].source);
 //console.log(graph.nodes[0].branch);
 
 //d3.selectAll("circle").style("fill", function(d) {  
@@ -208,7 +208,9 @@ function line_layout() {
     	 //d.x = xScale(i);
     }
     //d.x = xScale(i);
+    //console.log("d is" + d.x);
   });
+  
   //node
    //.attr("x", function(d, i) {
      // return xScale(d.x);         // <-- Set x values
@@ -268,25 +270,52 @@ d3.select("input[value=\"time\"]").on("click", time);
             .y(function(d) { return d.source.y; })
 			.x(function(d) { return d.target.x; })
             .y(function(d) { return d.target.y; })
+            .interpolate("linear");
            ;*/
     
-function line(d){ 
+var lineData= [ ];
+
+/*graph.links.forEach(function(d, i) {
+	//console.log(d.source.x);
+	lineData=
+	{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+5},
+ 	{x:d.target.x, y:d.target.y+5}, {x:d.target.x, y:d.target};
+ 	//console.log(lineData);
+
+});*/
+
+console.log(graph.links[1].source.x);
+/*graph.links.map(function(d, i) {
+	 //console.log(d);
+	lineData.push(
+	{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+5},
+ 	{x:d.target.x, y:d.target.y+5}, {x:d.target.x, y:d.target})
+ 	 
+ 	 });*/
+ 				
+//console.log(lineData);
+//console.log(graph.links[1].source);
+
+var line=
 	d3.svg.line()
-            .x(function(d) { return d.x; })
-            .y(function(d) { return d.y; })
+            .x(function(d) { return d.source.x; })
+            .y(function(d) { return d.source.y; })
              .interpolate("linear");
 
-}
         
 var link = svg.selectAll(".link")
-              .data(graph.links)
+            .data(graph.links)
             .enter().append("path")
-            .attr("d", function(d){
-            var lineData = [{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+5},
- 			{x:d.target.x, y:d.target.y+5}, {x:d.target.x, y:d.target}];
-            		return line(lineData, d);
-            		})
+            .attr("d", line(function(d, i){
+            	var lineData=
+            	[{"x":d.source.x, "y":d.source.y}, {"x":d.source.x, "y":d.source.y+5},
+            	{"x":d.target.x, "y":d.target.y+5}, {"x":d.target.x, "y":d.target}];
+            	 return lineData;
+            }))
             .attr("class", "link")
+            .attr("stroke", "blue")
+             .attr("stroke-width", 2)
+             .attr("fill", "none");
               //.attr("marker-end", "url(#end)");
 
 var node = svg.selectAll(".node")
