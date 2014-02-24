@@ -44,14 +44,16 @@ var svg = d3.select("body").append("svg")
 var fill = d3.scale.category10();
 
 var graph = {nodes:[], links:[]};
-
+var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
 var names = ["gh-pages", "master"]
+
 var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[0], function(error, data){
 
 
 graph.nodes = data.map(function(d, i) {  
-  return { sha: data[i].sha, commit: data[i].commit, branch: names[0], date: data[i].commit.author.date } 
+  return { sha: data[i].sha, commit: data[i].commit, branch: names[0], date: data[i].commit.author.date,
+  parents: data[i].parents } 
 }); 
 
 //var k = data.map(function(d, i) { return data[i].commit});
@@ -69,8 +71,15 @@ graph.nodes.map(function(d, i){
 	});
 });
 //console.log(graph);
+data.map(function(d, i){
+	data[i].parents.map(function(e, j) {
+		parents.parents.push({"parents":e });
+		parents.source.push({"source":data[i].sha});
+	})
+})
 
-graph.nodes.map(function(d, i) {
+console.log(parents);
+/*graph.nodes.map(function(d, i) {
 //goes through the data array
  data[i].parents.map(function(e, j) {
     //for each data item, selects the parents, individually
@@ -87,7 +96,7 @@ graph.nodes.map(function(d, i) {
 		}
 		}) 
   });
-  });
+  });*/
   console.log(graph);
   
   var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[1], function(error, data){
@@ -98,7 +107,8 @@ graph.nodes.map(function(d, i) {
 
 var t = data.map(function(d, i) {  
   return graph.nodes.push({ sha: data[i].sha, commit: data[i].commit,  branch: names[1],
-  			 date: Date.parse(data[i].commit.author.date) }); 
+  			 date: Date.parse(data[i].commit.author.date),
+  			 parents: data[i].parents}); 
 }); 
 
 graph.nodes.map(function(d, i){
@@ -108,13 +118,26 @@ graph.nodes.map(function(d, i){
 		return d3.ascending(a.date, b.date);
 	});
 });
-//var k = data.map(function(d, i) { return data[i].commit});
-//console.log(k+" is ");
 
-//var p = data.map(function(d, i) { return data[i].parents});
-//console.log(p);
+data.map(function(d, i){
+	data[i].parents.map(function(e, j) {
+		parents.parents.push({"parents":e });
+		parents.source.push({"source":data[i].sha});
+	})
+});
+console.log(parents);
 
-t.map(function(d, i) {
+graph.nodes.map(function(d, i){
+	graph.nodes[i].parents.map(function(l, m){
+		graph.nodes.map(function(e, j){
+			if(e.sha == l.sha){
+				graph.links.push({"source":i, "target":j});
+			}
+		})
+	})
+})
+
+/*t.map(function(d, i) {
 //goes through the data array
  data[i].parents.map(function(e, j) {
     //for each data item, selects the parents, individually
@@ -131,7 +154,9 @@ t.map(function(d, i) {
 		}
 		}) 
   })
-  });
+  });*/
+  
+  
 
 console.log(graph);
 //console.log(graph.links[1].source);
@@ -247,7 +272,7 @@ d3.select("input[value=\"time\"]").on("click", time);
 
 
 // build the arrow.
-/*svg.append("svg:defs").selectAll("marker")
+svg.append("svg:defs").selectAll("marker")
     .data(["end"])      // Different link/path types can be defined here
   .enter().append("svg:marker")    // This section adds in the arrows
     .attr("id", String)
@@ -257,66 +282,15 @@ d3.select("input[value=\"time\"]").on("click", time);
     .attr("markerWidth", 6)
     .attr("markerHeight", 6)
     .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");*/
+  	.append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
     
-
-             
-//var lineData = [{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+offset_y},
- //				{x:d.target.x, y:d.target.y+offset_y}, {x:d.target.x, y:d.target}];
- 				
-/*var line = d3.svg.line()
-            .x(function(d) { return d.source.x; })
-            .y(function(d) { return d.source.y; })
-			.x(function(d) { return d.target.x; })
-            .y(function(d) { return d.target.y; })
-            .interpolate("linear");
-           ;*/
-    
-var lineData= [ ];
-
-/*graph.links.forEach(function(d, i) {
-	//console.log(d.source.x);
-	lineData=
-	{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+5},
- 	{x:d.target.x, y:d.target.y+5}, {x:d.target.x, y:d.target};
- 	//console.log(lineData);
-
-});*/
-
-console.log(graph.links[1].source.x);
-/*graph.links.map(function(d, i) {
-	 //console.log(d);
-	lineData.push(
-	{x:d.source.x, y:d.source.y}, {x:d.source.x, y:d.source.y+5},
- 	{x:d.target.x, y:d.target.y+5}, {x:d.target.x, y:d.target})
- 	 
- 	 });*/
- 				
-//console.log(lineData);
-//console.log(graph.links[1].source);
-
-var line=
-	d3.svg.line()
-            .x(function(d) { return d.source.x; })
-            .y(function(d) { return d.source.y; })
-             .interpolate("linear");
-
-        
+     
 var link = svg.selectAll(".link")
             .data(graph.links)
-            .enter().append("path")
-            .attr("d", line(function(d, i){
-            	var lineData=
-            	[{"x":d.source.x, "y":d.source.y}, {"x":d.source.x, "y":d.source.y+5},
-            	{"x":d.target.x, "y":d.target.y+5}, {"x":d.target.x, "y":d.target}];
-            	 return lineData;
-            }))
+            .enter().append("line")
             .attr("class", "link")
-            .attr("stroke", "blue")
-             .attr("stroke-width", 2)
-             .attr("fill", "none");
-              //.attr("marker-end", "url(#end)");
+            .attr("marker-end", "url(#end)");
 
 var node = svg.selectAll(".node")
               .data(graph.nodes)
