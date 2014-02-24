@@ -52,9 +52,11 @@ var remaining = 1
 //Get Branch Data
 
 
-var branchD = d3.json("https://api.github.com/repos/Snugug/north/branches", function(error, data1){
+var branchD = d3.json("https://api.github.com/repos/afaqurk/linux-dash/branches", function(error, data1){
 		names = data1.map(function(d, i){
-			return data1[i].name;
+			//if(names.length <=3){
+				return data1[i].name;
+			//}
 		});
 	if(! --remaining) commitD();
 });
@@ -63,7 +65,7 @@ function commitD(){
 	remaining = names.length;
 	names.forEach(function(d, i){
 	
-  var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[i], function(error, data){
+  var dataset = d3.json("https://api.github.com/repos/afaqurk/linux-dash/commits"+"?sha="+names[i], function(error, data){
 
 console.log(names[i]);
 data.map(function(e, j) {  
@@ -174,7 +176,15 @@ function line_layout() {
     if(graph.nodes[i].branch=="master"){
     	d.y = height/2;
     }else{
-    	d.y = (height/2)+30;
+    	names.forEach(function(e, j){
+    		if(graph.nodes[i].branch==e){
+    		console.log(e);
+    			d.y = (height/2)+(30*(j+1) );
+    		}	
+    	
+    	} );
+    	
+    	//d.y = (height/2)+30;
     }
 
   });
