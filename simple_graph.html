@@ -56,12 +56,6 @@ graph.nodes = data.map(function(d, i) {
   parents: data[i].parents } 
 }); 
 
-//var k = data.map(function(d, i) { return data[i].commit});
-//console.log(k+" is ");
-
-//var p = data.map(function(d, i) { return data[i].parents});
-//console.log(Date.parse(graph.nodes[1].commit.author.date));
-//sort here?
 
 graph.nodes.map(function(d, i){
 	d.date=Date.parse(graph.nodes[i].date);
@@ -79,31 +73,11 @@ data.map(function(d, i){
 })
 
 console.log(parents);
-/*graph.nodes.map(function(d, i) {
-//goes through the data array
- data[i].parents.map(function(e, j) {
-    //for each data item, selects the parents, individually
-    //then need to push parents to own link item, and
-    //save the sha as the source
-    graph.nodes.map(function(l, m) {
-    //console.log( l)
-    	if(l.sha == data[i].parents[j].sha){
-      graph.links.push({"source": i	, "target": m })
-		 //console.log(d.parents);
-		//console.log(parents);
-		//console.log("e is" + j);
-		 //console.log(graph.links);
-		}
-		}) 
-  });
-  });*/
+
   console.log(graph);
   
   var dataset = d3.json("https://api.github.com/repos/Snugug/north/commits"+"?sha="+names[1], function(error, data){
-  //console.log(graph.links);
- // graph.nodes = data.map(function(d, i) {  
- // return { sha: data[i].sha, commit: data[i].commit } 
-//}); 
+ 
 
 var t = data.map(function(d, i) {  
   return graph.nodes.push({ sha: data[i].sha, commit: data[i].commit,  branch: names[1],
@@ -137,35 +111,8 @@ graph.nodes.map(function(d, i){
 	})
 })
 
-/*t.map(function(d, i) {
-//goes through the data array
- data[i].parents.map(function(e, j) {
-    //for each data item, selects the parents, individually
-    //then need to push parents to own link item, and
-    //save the sha as the source
-    graph.nodes.map(function(l, m) {
-    //console.log( l)
-    	if(l.sha == data[i].parents[j].sha){
-      graph.links.push({"source": i	, "target": m })
-		 //console.log(d.parents);
-		//console.log(parents);
-		//console.log("e is" + j);
-		 //console.log(graph.links);
-		}
-		}) 
-  })
-  });*/
-  
-  
 
 console.log(graph);
-//console.log(graph.links[1].source);
-//console.log(graph.nodes[0].branch);
-
-//d3.selectAll("circle").style("fill", function(d) {  
-//		console.log("di is "+d); 
-//	return fill("blue"); });
-
 
 // Generate the force layout
 var force = d3.layout.force()
@@ -224,22 +171,14 @@ function line_layout() {
   graph.nodes.forEach(function(d, i) {
     //console.log(graph.nodes[i].branch);
     d.x = xScale(i);
-    //d.x = tScale(d.date);
     if(graph.nodes[i].branch=="master"){
     	d.y = height/2;
-    	//d.x = xScale(i);
     }else{
     	d.y = (height/2)+30;
-    	 //d.x = xScale(i);
     }
-    //d.x = xScale(i);
-    //console.log("d is" + d.x);
+
   });
   
-  //node
-   //.attr("x", function(d, i) {
-     // return xScale(d.x);         // <-- Set x values
-   //})
 
   graph_update(500);
 }
@@ -261,12 +200,6 @@ var line=  d3.svg.line()
 			.y(function(d) { return d.y; })
 			.interpolate("linear"); 
 	  
-	  
-	 /* var lineData = [ {x:d.source.x, y:d.source.y}, 
-				{x:d.source.x, y:d.source.y+5},
-				{x:d.target.x, y:d.target.y+5}, 
-				{x:d.target.x, y:d.target} ]; */
-
   link.transition().duration(delay)
       .attr("x1", function(d) { return d.target.x; })
       .attr("y1", function(d) { return d.target.y; })
@@ -305,11 +238,6 @@ svg.append("svg:defs").selectAll("marker")
     .attr("d", "M0,-5L10,0L0,5");
     
 console.log("It is "+ graph.links[0].source.n);
-
-/*var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
- 	           { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
-                 { "x": 80,  "y": 5},  { "x": 100, "y": 60}];*/
-   
 
     
 var line=  d3.svg.line()
