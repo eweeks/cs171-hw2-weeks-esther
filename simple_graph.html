@@ -43,8 +43,8 @@
   </form>
   <form>
   Sort By:
-    <label><input type="radio" name="sort" value="branch" checked>Branch</label>
-    <label><input type="radio" name="sort" value="author">Author</label>
+    <label><input type="radio" name="sort" value="branch" id="branch" checked>Branch</label>
+    <label><input type="radio" name="sort" value="author" id="author">Author</label>
   </form>
 
 <script>
@@ -210,11 +210,23 @@ console.log(authors);
 function line_layout() {
 
   force.stop();
+    graph.nodes.forEach(function(d, i) {
+    //console.log(graph.nodes[i].commit.author.name);
+    	d.x = xScale(i);
+ 	 	
+ 	 });
+y_sort();
+  
 
+  //graph_update(500);
+}
+
+
+function y_sort(){
   graph.nodes.forEach(function(d, i) {
     //console.log(graph.nodes[i].commit.author.name);
-    d.x = xScale(i);
-    /*if(graph.nodes[i].branch=="master"){
+    if(document.getElementById("branch").checked == true){
+    	if(graph.nodes[i].branch=="master"){
     	d.y = height/3;
     }else{
     	names.forEach(function(e, j){
@@ -226,20 +238,22 @@ function line_layout() {
     	} );
     	
     	//d.y = (height/2)+30;
-    }*/
-    authors.forEach(function(e, j){
+    }
+    
+    }else {
+    	 authors.forEach(function(e, j){
     		if(graph.nodes[i].commit.author.name==e){
     			//console.log(e);
     			d.y = (height/3)+(30*(j+1) );
     		}
-    	});	
+    	});		
+    }
+   
 
   });
-  
-
   graph_update(500);
-}
 
+}
 
 function graph_update(delay) {
 	
@@ -276,11 +290,13 @@ var lineZ= d3.svg.line()
       .attr("transform", function(d) { 
         return "translate("+d.x+","+d.y+")"; 
       });
-    //console.log(graph);
+    console.log("Here!");
 }
 
 d3.select("input[value=\"linear\"]").on("click", line_layout );
 d3.select("input[value=\"time\"]").on("click", time);
+d3.select("input[value=\"branch\"]").on("click", y_sort);
+d3.select("input[value=\"author\"]").on("click", y_sort);
 
 
 // build the arrow.
