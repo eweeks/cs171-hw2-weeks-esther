@@ -217,10 +217,15 @@ function line_layout() {
 function graph_update(delay) {
 	
 	      
-var line=  d3.svg.line()
+var lineS=  d3.svg.line()
 			.x(function(d) { return d.x; })
 			.y(function(d) { return d.y; })
 			.interpolate("linear"); 
+
+var lineZ= d3.svg.line()
+			.x(function(d) { return d.x; })
+			.y(function(d) { return d.y; })
+			.interpolate("step-before");
 	  
   link.transition().duration(delay)
       .attr("x1", function(d) { return d.target.x; })
@@ -228,11 +233,17 @@ var line=  d3.svg.line()
       .attr("x2", function(d) { return d.source.x; })
       .attr("y2", function(d) { return d.source.y; })
       .attr("d", function(d){
-      			return line([{x:d.target.x, y:d.target.y}, 
-				{x:d.target.x, y:d.target.y+10},
-				{x:d.source.x, y:d.source.y+10}, 
-				{x:d.source.x, y:d.source.y} ])
-				});
+      			//console.log(d.target.branch);
+      			if(d.target.branch == d.source.branch){
+      				return lineS([{x:d.target.x, y:d.target.y}, 
+				//{x:d.target.x, y:d.target.y},
+				//{x:d.source.x, y:d.source.y}, 
+					{x:d.source.x, y:d.source.y} ]);
+				}else{
+					return lineZ([{x:d.target.x, y:d.target.y}, 
+								{x:d.source.x, y:d.source.y} ]);
+				}
+		});
 
   node.transition().duration(delay)
       .attr("transform", function(d) { 
