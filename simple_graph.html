@@ -215,7 +215,7 @@ function line_layout() {
     	d.x = xScale(i);
  	 	
  	 });
-y_sort();
+	y_sort();
   
 
   //graph_update(500);
@@ -255,6 +255,54 @@ function y_sort(){
 
 }
 
+function a_sort(){
+	y_sort();
+	console.log(authors);
+	var s = d3.select(".branches").selectAll("text").data(authors);
+
+    s.enter()
+	.append("text");
+    
+    s.exit()
+    .remove();
+    
+    s.text(function(d, i) { 
+    	return d; })
+    .attr("y", function(d, i) { 
+    	//console.log(d);
+    	if(d=="master"){
+    		return height/3;
+    	}else{
+    		return (height/3)+(30*(i+1));
+    	}
+    });
+    	
+}
+
+function b_sort(){
+	y_sort();
+	console.log(authors);
+	var s = d3.select(".branches").selectAll("text").data(names);
+
+    s.enter()
+	.append("text");
+    
+    s.exit()
+    .remove();
+    
+    s.text(function(d, i) { 
+    	return d; })
+    .attr("y", function(d, i) { 
+    	//console.log(d);
+    	if(d=="master"){
+    		return height/3;
+    	}else{
+    		return (height/3)+(30*(i+1));
+    	}
+    });
+
+}
+
 function graph_update(delay) {
 	
 	      
@@ -275,28 +323,38 @@ var lineZ= d3.svg.line()
       .attr("y2", function(d) { return d.source.y; })
       .attr("d", function(d){
       			//console.log(d.target.branch);
-      			if(d.target.commit.author.name == d.source.commit.author.name){
-      				return lineS([{x:d.target.x, y:d.target.y}, 
-				//{x:d.target.x, y:d.target.y},
-				//{x:d.source.x, y:d.source.y}, 
+      	  /*if(document.getElementById("branch").checked == true){
+      			if(d.target.branch == d.source.branch){
+      				return lineS([{x:d.target.x, y:d.target.y},  
 					{x:d.source.x, y:d.source.y} ]);
 				}else{
 					return lineZ([{x:d.target.x, y:d.target.y}, 
 								{x:d.source.x, y:d.source.y} ]);
 				}
+			}else{*/
+				if(d.target.commit.author.name == d.source.commit.author.name){
+      				return lineS([{x:d.target.x, y:d.target.y},  
+					{x:d.source.x, y:d.source.y} ]);
+				}else{
+					return lineZ([{x:d.target.x, y:d.target.y}, 
+								{x:d.source.x, y:d.source.y} ]);
+				}
+			
+			
+			//}
 		});
+		
 
   node.transition().duration(delay)
       .attr("transform", function(d) { 
         return "translate("+d.x+","+d.y+")"; 
       });
-    console.log("Here!");
 }
 
 d3.select("input[value=\"linear\"]").on("click", line_layout );
 d3.select("input[value=\"time\"]").on("click", time);
-d3.select("input[value=\"branch\"]").on("click", y_sort);
-d3.select("input[value=\"author\"]").on("click", y_sort);
+d3.select("input[value=\"branch\"]").on("click", b_sort);
+d3.select("input[value=\"author\"]").on("click", a_sort);
 
 
 // build the arrow.
