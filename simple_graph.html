@@ -27,6 +27,30 @@
   	fill-opacity: 1;
   }
   
+  .checked{
+  
+  }
+  
+  #tooltip {
+        position: absolute;
+        width: 200px;
+        height: 80px;
+        padding: 5px;
+        background-color: white;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+}
+
+#tooltip.hidden {
+        display: none;
+}
+  
+  
   path.link {
   fill: none;
   stroke: #666;
@@ -36,6 +60,11 @@
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+ <div id="tooltip" class="hidden">
+ 	<p>Branch: <span id="title"></span></p>
+        <p>Author: <span id="value">100</span></p>
+</div>
+
   <form>
   Scale:
     <label><input type="radio" name="scale" value="linear" checked>Linear</label>
@@ -204,8 +233,6 @@ graph.nodes.forEach(function(d, i){
 	}
 });
 
-console.log(authors);
-
 
 function line_layout() {
 
@@ -257,7 +284,6 @@ function y_sort(){
 
 function a_sort(){
 	y_sort();
-	console.log(authors);
 	var s = d3.select(".branches").selectAll("text").data(authors);
 
     s.enter()
@@ -281,7 +307,6 @@ function a_sort(){
 
 function b_sort(){
 	y_sort();
-	console.log(authors);
 	var s = d3.select(".branches").selectAll("text").data(names);
 
     s.enter()
@@ -324,6 +349,7 @@ var lineZ= d3.svg.line()
       .attr("d", function(d){
       			//console.log(d.target.branch);
       	  /*if(document.getElementById("branch").checked == true){
+      			console.log("1");
       			if(d.target.branch == d.source.branch){
       				return lineS([{x:d.target.x, y:d.target.y},  
 					{x:d.source.x, y:d.source.y} ]);
@@ -332,6 +358,7 @@ var lineZ= d3.svg.line()
 								{x:d.source.x, y:d.source.y} ]);
 				}
 			}else{*/
+				console.log("2");
 				if(d.target.commit.author.name == d.source.commit.author.name){
       				return lineS([{x:d.target.x, y:d.target.y},  
 					{x:d.source.x, y:d.source.y} ]);
@@ -339,8 +366,6 @@ var lineZ= d3.svg.line()
 					return lineZ([{x:d.target.x, y:d.target.y}, 
 								{x:d.source.x, y:d.source.y} ]);
 				}
-			
-			
 			//}
 		});
 		
@@ -353,8 +378,16 @@ var lineZ= d3.svg.line()
 
 d3.select("input[value=\"linear\"]").on("click", line_layout );
 d3.select("input[value=\"time\"]").on("click", time);
-d3.select("input[value=\"branch\"]").on("click", b_sort);
-d3.select("input[value=\"author\"]").on("click", a_sort);
+d3.select("input[value=\"branch\"]").on("click", function(d, i){ 
+	b_sort();
+	d3.select(this).attr("class", "checked");
+	d3.select("#author").attr("class", "");
+	});
+d3.select("input[value=\"author\"]").on("click", function(d, i){ 
+	a_sort();
+	d3.select(this).attr("class", "checked");
+	d3.select("#branch").attr("class", "");
+	});
 
 
 // build the arrow.
@@ -401,14 +434,33 @@ node.append("circle")
    		d3.selectAll("circle").attr("class", "hover");
    		d3.select(this).attr("class", "target");
    		d3.select(this).attr("fill", "red");
-
    		
-   })
+   		console.log(d.y);
+   	//Get this bar's x/y values, then augment for the tooltip
+	var xPosition = parseFloat(d.x+15) ;
+	var yPosition = parseFloat(d.y+45) ;
+
+	//Update the tooltip position and value
+d3.select("#tooltip")
+  .style("left", xPosition + "px")
+  .style("top", yPosition + "px")
+  .select("#value")
+  .text(d.commit.author.name);
+  
+  d3.select("#title")
+	.text(d.branch)
+//Show the tooltip
+d3.select("#tooltip").classed("hidden", false);
+
+})
+
    .on("mouseout", function(d){
    		d3.selectAll("circle").attr("class", "");
    		d3.select(this).attr("fill", function(d) {
 			return fill(d.branch);
 		});
+   		//Hide the tooltip
+		d3.select("#tooltip").classed("hidden", true);
    })
     .append("title")
    .text(function(d, i) {
