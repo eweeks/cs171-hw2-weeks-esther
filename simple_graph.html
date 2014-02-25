@@ -41,6 +41,11 @@
     <label><input type="radio" name="scale" value="linear" checked>Linear</label>
     <label><input type="radio" name="scale" value="time">Time</label>
   </form>
+  <form>
+  Sort By:
+    <label><input type="radio" name="sort" value="branch" checked>Branch</label>
+    <label><input type="radio" name="sort" value="author">Author</label>
+  </form>
 
 <script>
 
@@ -57,6 +62,7 @@ var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
 var names = [ ];
+var authors = [ ];
 var remaining = 1
 
 //Get Branch Data
@@ -191,15 +197,24 @@ function time(){
 
 };
 
+//author data
+graph.nodes.forEach(function(d, i){
+	if(authors.indexOf(graph.nodes[i].commit.author.name) == -1){
+		authors.push(graph.nodes[i].commit.author.name);
+	}
+});
+
+console.log(authors);
+
 
 function line_layout() {
 
   force.stop();
 
   graph.nodes.forEach(function(d, i) {
-    //console.log(graph.nodes[i].branch);
+    //console.log(graph.nodes[i].commit.author.name);
     d.x = xScale(i);
-    if(graph.nodes[i].branch=="master"){
+    /*if(graph.nodes[i].branch=="master"){
     	d.y = height/3;
     }else{
     	names.forEach(function(e, j){
@@ -210,7 +225,14 @@ function line_layout() {
     	
     	} );
     	
-    }
+    	//d.y = (height/2)+30;
+    }*/
+    authors.forEach(function(e, j){
+    		if(graph.nodes[i].commit.author.name==e){
+    			//console.log(e);
+    			d.y = (height/3)+(30*(j+1) );
+    		}
+    	});	
 
   });
   
@@ -239,7 +261,7 @@ var lineZ= d3.svg.line()
       .attr("y2", function(d) { return d.source.y; })
       .attr("d", function(d){
       			//console.log(d.target.branch);
-      			if(d.target.branch == d.source.branch){
+      			if(d.target.commit.author.name == d.source.commit.author.name){
       				return lineS([{x:d.target.x, y:d.target.y}, 
 				//{x:d.target.x, y:d.target.y},
 				//{x:d.source.x, y:d.source.y}, 
@@ -316,7 +338,8 @@ node.append("circle")
    })
     .append("title")
    .text(function(d, i) {
-        return d.branch;
+        return d.branch+", "+d.commit.author.name;
+        
    });
 
 force_layout();
