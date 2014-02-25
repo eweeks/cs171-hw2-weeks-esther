@@ -17,6 +17,16 @@
     fill: red;
   }
   
+  .hover{
+  	stroke-opacity: .5;
+  	fill-opacity: .5;
+  }
+  
+  .target{
+  	stroke-opacity: 1;
+  	fill-opacity: 1;
+  }
+  
   path.link {
   fill: none;
   stroke: #666;
@@ -67,7 +77,6 @@ function commitD(){
 	
   var dataset = d3.json("https://api.github.com/repos/"+git+"/commits"+"?sha="+names[i], function(error, data){
 
-//console.log(names[i]);
 data.map(function(e, j) {  
   graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names[i], date: Date.parse(data[j].commit.author.date),
   parents: data[j].parents } );
@@ -75,8 +84,6 @@ data.map(function(e, j) {
 
 
 graph.nodes.map(function(d, i){
-	//d.date=Date.parse(graph.nodes[i].date);
-	//console.log(d.date);
 	graph.nodes.sort(function(a, b){
 		return d3.ascending(a.date, b.date);
 	});
@@ -161,7 +168,6 @@ function force_layout() {
 var xScale = d3.scale.ordinal()
                 .domain(d3.range(graph.nodes.length))
                 .rangeRoundBands([30, width], 1);
-                //console.log(graph.nodes.length);
 
 var min = d3.min(graph.nodes, function(d){
 	return d.date;
@@ -204,7 +210,6 @@ function line_layout() {
     	
     	} );
     	
-    	//d.y = (height/2)+30;
     }
 
   });
@@ -297,9 +302,14 @@ node.append("circle")
 			
    })
    .on("mouseover", function(d) {
+   		d3.selectAll("circle").attr("class", "hover");
+   		d3.select(this).attr("class", "target");
    		d3.select(this).attr("fill", "red");
+
+   		
    })
    .on("mouseout", function(d){
+   		d3.selectAll("circle").attr("class", "");
    		d3.select(this).attr("fill", function(d) {
 			return fill(d.branch);
 		});
