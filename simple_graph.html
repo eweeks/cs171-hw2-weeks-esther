@@ -270,7 +270,7 @@ function a_sort(){
     	return d; })
     .attr("y", function(d, i) { 
     	//console.log(d);
-    	if(d=="master"){
+    	if(i==0){
     		return height/3;
     	}else{
     		return (height/3)+(30*(i+1));
