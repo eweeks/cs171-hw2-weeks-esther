@@ -476,6 +476,16 @@ var link = display.selectAll(".link")
             .enter().append("path")
             //.attr("d", line(lineData))
             .attr("class", "link")
+            .on("mouseover", function(d) {
+            	console.log(d.source.branch);
+            	var c = d.source.branch;
+   				d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5");
+            
+            })
+            .on("mouseout", function(d){
+            	var c = d.source.branch;
+   				d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0");
+            });
             //.attr("marker-end", "url(#end)");
             
             
@@ -487,8 +497,7 @@ var link = display.selectAll(".link")
 				return "1px";
 			}
 			});*/
-   		
-            console.log(link.data());
+
             
             
             
