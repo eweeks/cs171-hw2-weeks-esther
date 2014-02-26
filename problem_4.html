@@ -92,7 +92,7 @@ var svg = d3.select("body").append("svg")
             .attr("height", height);
 
 var fill = d3.scale.category10();
-var git = "Caleydo/caleydo";
+var git = "afaqurk/linux-dash";
 var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
@@ -186,7 +186,7 @@ var lScale = d3.scale.ordinal()
 	.append("g")
     .attr("class", "branches")
 	.selectAll("text")
-	.data(names)
+	.data(names.name)
     .enter()
     .append("text")
     .text(function(d) { return d; })
