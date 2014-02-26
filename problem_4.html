@@ -23,10 +23,10 @@
     fill: red;
   }
   
-  .hover{
-  	stroke-opacity: .5;
-  	fill-opacity: .5;
-  }
+  //.hover{
+  	//stroke-opacity: .5;
+  	//fill-opacity: .5;
+  //}
   
   .target{
   	stroke-opacity: 1;
@@ -387,6 +387,13 @@ var lineZ= d3.svg.line()
 			})
 		.attr("stroke", function(d, i){
 			return fill(d.source.branch);
+		})
+		.attr("marker-end", function(d, i){
+			if(d.target.branch != d.source.branch){
+				return "url(#end)";
+			}else{
+				return "";
+			}
 		});
 			
 if(document.getElementById("branch").checked == true){  
@@ -469,7 +476,7 @@ var link = display.selectAll(".link")
             .enter().append("path")
             //.attr("d", line(lineData))
             .attr("class", "link")
-            .attr("marker-end", "url(#end)");
+            //.attr("marker-end", "url(#end)");
             
             
             /*link.attr("stroke-width", function(d, i) {
@@ -510,13 +517,20 @@ node.append("circle")
 			return fill(d.branch);
 			
    })
+   .attr("class", function(d){
+   		return d.branch;
+   })
    .attr("style", "fill-opacity: 0; stroke-opacity: 0")
    .on("mouseover", function(d) {
-   		d3.selectAll("circle").attr("class", "hover");
-   		d3.select(this).attr("class", "target");
+   		d3.selectAll("circle")//.attr("class", "hover");
+   		//d3.select(this).attr("class", "target");
    		d3.select(this).attr("fill", "red");
    		d3.select(this).attr("style", "fill-opacity: 1; stroke-opacity: .5");
-   	//Get this bar's x/y values, then augment for the tooltip
+   		
+   		var c = d.branch
+   		d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5");
+   	
+   	//Get this circles position for tooltip
 	var xPosition = parseFloat(d.x+15) ;
 	var yPosition = parseFloat(d.y+45) ;
 
@@ -535,11 +549,13 @@ d3.select("#tooltip").classed("hidden", false);
 })
 
    .on("mouseout", function(d){
-   		d3.selectAll("circle").attr("class", "");
+   		//d3.selectAll("circle").attr("class", "");
+   		var c = d.branch
    		d3.select(this).attr("fill", function(d) {
 			return fill(d.branch);
 		});
 		d3.select(this).attr("style", "fill-opacity: 0; stroke-opacity: 0");
+   		d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0");
    		//Hide the tooltip
 		d3.select("#tooltip").classed("hidden", true);
    })
