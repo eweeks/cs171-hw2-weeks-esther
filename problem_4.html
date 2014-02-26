@@ -104,7 +104,7 @@ var header = d3.select("#buttons").append("svg")
 			.attr("height", "100");
 
 var fill = d3.scale.category10();
-var git = "mbostock/d3";
+var git = "afaqurk/linux-dash";
 var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
@@ -188,9 +188,9 @@ names.name.map(
     .text(function(d) { return d; })
     .attr("x", function(d, i) { 
     		if(i==0){
-    			return  (width/names.name.length)*i+padding;
+    			return  ((width/names.name.length)*i+padding)+5;
     		}else{
-    			return  (width/names.name.length)*i;
+    			return  ((width/names.name.length)*i)+5;
     		}
     })
     .attr("y", function(d, i){
@@ -243,7 +243,7 @@ function force_layout() {
 
 var yScale = d3.scale.ordinal()
                 .domain(d3.range(graph.nodes.length))
-                .rangeRoundBands([60, height], 1);
+                .rangeRoundBands([100, height], 1);
 
 var min = d3.min(graph.nodes, function(d){
 	return d.date;
@@ -459,11 +459,11 @@ if(document.getElementById("branch").checked == true){
       	  //if(document.getElementById("branch").checked == true){
       		//	console.log("1");
       			if(d.target.branch == d.source.branch){
-      				return lineS([{x:d.target.x, y:d.target.y},  
-					{x:d.source.x, y:d.source.y} ]);
+      				return lineS([{x:d.target.x+5, y:d.target.y+5},  
+					{x:d.source.x+5, y:d.source.y+5} ]);
 				}else{
-					return lineZ([{x:d.target.x, y:d.target.y}, 
-								{x:d.source.x, y:d.source.y} ]);
+					return lineZ([{x:d.target.x+5, y:d.target.y+5}, 
+								{x:d.source.x+5, y:d.source.y+5} ]);
 				}
 		  })
 
@@ -578,8 +578,11 @@ var node = display.selectAll(".node")
             .enter()
               .append("g").attr("class", "node");
 
-node.append("circle")
-    .attr("r", 6)
+node.append("rect")
+	.attr("rx", 100)
+	.attr("ry", 100)
+    .attr("width", 10)
+    .attr("height", 10)
     .attr("fill", function(d) {
 			return fill(d.branch);
 			
@@ -589,7 +592,7 @@ node.append("circle")
    })
    .attr("style", "fill-opacity: 0; stroke-opacity: 0")
    .on("mouseover", function(d) {
-   		d3.selectAll("circle")//.attr("class", "hover");
+   		d3.selectAll("rect")//.attr("class", "hover");
    		//d3.select(this).attr("class", "target");
    		d3.select(this).attr("fill", "red");
    		d3.select(this).attr("style", "fill-opacity: .8; stroke-opacity: .5");
