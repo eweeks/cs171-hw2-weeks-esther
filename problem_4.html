@@ -101,7 +101,7 @@ var svg = d3.select("body").append("svg")
             
 var header = d3.select("#buttons").append("svg")
 			.attr("width", width)
-			.attr("height", "100");
+			.attr("height", "140");
 
 var fill = d3.scale.category10();
 var git = "afaqurk/linux-dash";
@@ -243,7 +243,7 @@ function force_layout() {
 
 var yScale = d3.scale.ordinal()
                 .domain(d3.range(graph.nodes.length))
-                .rangeRoundBands([100, height], 1);
+                .rangeRoundBands([150, height], 1);
 
 var min = d3.min(graph.nodes, function(d){
 	return d.date;
@@ -356,9 +356,9 @@ function a_sort(){
     .attr("x", function(d, i) { 
     	//console.log(d);
     	if(i==0){
-    		return (width/authors.author.length)*i+padding;
+    		return ((width/authors.author.length)*i+padding)+5;
     	}else{
-    		return (width/authors.author.length)*i;
+    		return ((width/authors.author.length)*i)+5;
     	}
     })
     .attr("y", function(d, i){
@@ -384,9 +384,9 @@ function b_sort(){
     .attr("x", function(d, i) { 
     	//console.log(d);
     	if(i==0){
-    		return (width/names.name.length)*i+padding;
+    		return ((width/names.name.length)*i+padding)+5;
     	}else{
-    		return (width/names.name.length)*i;
+    		return ((width/names.name.length)*i)+5;
     	}
     })
     .attr("y", function(d, i){
@@ -475,11 +475,11 @@ if(document.getElementById("branch").checked == true){
       .attr("y1", function(d) { return d.target.y; })*/
       link.attr("d", function(d){
       		if(d.target.commit.author.name == d.source.commit.author.name){
-      				return lineS([{x:d.target.x, y:d.target.y},  
-					{x:d.source.x, y:d.source.y} ]);
+      				return lineS([{x:d.target.x+5, y:d.target.y+5},  
+					{x:d.source.x+5, y:d.source.y+5} ]);
 			}else{
-				return lineZ([{x:d.target.x, y:d.target.y}, 
-						{x:d.source.x, y:d.source.y} ]);
+				return lineZ([{x:d.target.x+5, y:d.target.y+5}, 
+						{x:d.source.x+5, y:d.source.y+5} ]);
 				
 			}
 		});
