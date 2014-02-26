@@ -176,11 +176,6 @@ names.name.map(
 });
 
 
-//labels scale
-var lScale = d3.scale.ordinal()
-			.domain(d3.range(names.name.length))
-			.rangeRoundBands([0, width], 0.09);
-
 
 	header
 	.append("g")
@@ -403,6 +398,14 @@ function b_sort(){
 
 }
 
+//scale for lines
+var lScale = d3.scale.linear()
+			.domain([ 0, d3.max(names.count) ])
+			.range([2, 8]);
+
+//var m = d3.max(names.count)
+console.log(lScale(1));
+
 function graph_update(delay) {
 	
 	      
@@ -423,7 +426,17 @@ var lineZ= d3.svg.line()
       .attr("y2", function(d) { return d.source.y; })
       .attr("stroke-width", function(d, i) {
 			if(d.target.branch == d.source.branch){
-				return "5px";
+				var s;
+				names.name.map(function(e, j){
+						if(d.source.branch == e){
+							s=j;
+						}
+				});
+				
+				var r=names.count[s];
+				console.log(r);
+
+				return lScale(r);
 			}else{
 				return "1px";
 			}
@@ -566,7 +579,7 @@ var node = display.selectAll(".node")
               .append("g").attr("class", "node");
 
 node.append("circle")
-    .attr("r", 5)
+    .attr("r", 6)
     .attr("fill", function(d) {
 			return fill(d.branch);
 			
@@ -579,10 +592,10 @@ node.append("circle")
    		d3.selectAll("circle")//.attr("class", "hover");
    		//d3.select(this).attr("class", "target");
    		d3.select(this).attr("fill", "red");
-   		d3.select(this).attr("style", "fill-opacity: 1; stroke-opacity: .5");
+   		d3.select(this).attr("style", "fill-opacity: .8; stroke-opacity: .5");
    		
    		var c = d.branch;
-   		d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5");
+   		d3.selectAll("."+c).attr("style", "fill-opacity: .8; stroke-opacity: .5");
    	
    	//Get this circles position for tooltip
 	var xPosition = parseFloat(d.x+15) ;
