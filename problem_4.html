@@ -97,7 +97,7 @@ var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
 var names = {name:[], count:[] };
-var authors = [ ];
+var authors = {author:[], count:[]};
 var remaining = 1;
 var padding = 25;
 
@@ -108,7 +108,6 @@ var branchD = d3.json("https://api.github.com/repos/"+git+"/branches", function(
 		data1.map(function(d, i){
 			//if(names.length <= 3){
 				names.name.push(data1[i].name);
-				console.log(names);
 			//}
 		});
 	if(! --remaining) commitD();
@@ -151,29 +150,18 @@ data.map(function(d, i){
 
 function map (){
 
-var many;
-var times=0;
 
+//gets count of the number of commits per branch
 names.name.map(
 	function(d, i){
-	//console.log(name);
-		many=0;
-		times=times+1;
-		console.log(times);
-	//console.log(graph.nodes.branch);
+		var many=0;
 	graph.nodes.map(function(e, j){
 		if(d == e.branch){
 			many=many+1;
-			//names.count[i].push(count);
-			console.log("e is"+e.branch);
-			console.log("n is"+d);
-			console.log("match at "+ j);
 		}
 	})
-	names.count.push({"count":many});
-	console.log(names);	
+	names.count.push(many);	
 });
-
 
 
 //labels scale
@@ -273,10 +261,24 @@ function time(){
 
 //author data
 graph.nodes.forEach(function(d, i){
-	if(authors.indexOf(graph.nodes[i].commit.author.name) == -1){
-		authors.push(graph.nodes[i].commit.author.name);
+	if(authors.author.indexOf(graph.nodes[i].commit.author.name) == -1){
+		authors.author.push(graph.nodes[i].commit.author.name);
 	}
 });
+
+//gets count of the number of commits per author
+authors.author.map(
+	function(d, i){
+		var many=0;
+	graph.nodes.map(function(e, j){
+		if(d == e.commit.author.name){
+			many=many+1;
+		}
+	})
+	authors.count.push(many);	
+});
+
+console.log(authors);
 
 
 function line_layout() {
@@ -313,13 +315,13 @@ function y_sort(){
     }
     
     }else {
-    	 authors.forEach(function(e, j){
+    	 authors.author.forEach(function(e, j){
     		if(graph.nodes[i].commit.author.name==e){
     			//console.log(e);
     			if(j==0){
-    				d.x = (width/authors.length)*j+padding;
+    				d.x = (width/authors.author.length)*j+padding;
     			}else{
-    				d.x = (width/authors.length)*j;
+    				d.x = (width/authors.author.length)*j;
     			}
     			
     		}
@@ -334,7 +336,7 @@ function y_sort(){
 
 function a_sort(){
 	y_sort();
-	var s = d3.select(".branches").selectAll("text").data(authors);
+	var s = d3.select(".branches").selectAll("text").data(authors.author);
 
     s.enter()
 	.append("text");
@@ -347,9 +349,9 @@ function a_sort(){
     .attr("x", function(d, i) { 
     	//console.log(d);
     	if(i==0){
-    		return (width/authors.length)*i+padding;
+    		return (width/authors.author.length)*i+padding;
     	}else{
-    		return (width/authors.length)*i;
+    		return (width/authors.author.length)*i;
     	}
     })
     .attr("y", function(d, i){
