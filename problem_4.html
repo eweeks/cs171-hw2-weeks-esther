@@ -6,6 +6,12 @@
     stroke: gray;
     stroke-width: 1.5px;
   }
+  
+  .group{
+  	//stroke: purple;
+  	//stroke-width: 2px;
+  	fill: none;
+  }
 
   .node {
     /*fill: #66CC66;*/
@@ -321,7 +327,8 @@ function a_sort(){
     	return  padding;
     })
     .attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
-    	
+    
+    trial();	
 }
 
 function b_sort(){
@@ -348,6 +355,8 @@ function b_sort(){
     	return  padding;
     })
      .attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
+    
+    trial();
 
 }
 
@@ -363,16 +372,29 @@ var lineZ= d3.svg.line()
 			.x(function(d) { return d.x; })
 			.y(function(d) { return d.y; })
 			.interpolate("step-before");
-	  
-  link.transition().duration(delay)
+			
+ link.transition().duration(delay)
       .attr("x1", function(d) { return d.target.x; })
       .attr("y1", function(d) { return d.target.y; })
       .attr("x2", function(d) { return d.source.x; })
       .attr("y2", function(d) { return d.source.y; })
-      .attr("d", function(d){
+      .attr("stroke-width", function(d, i) {
+			if(d.target.branch == d.source.branch){
+				return "5px";
+			}else{
+				return "1px";
+			}
+			})
+		.attr("stroke", function(d, i){
+			return fill(d.source.branch);
+		});
+			
+if(document.getElementById("branch").checked == true){  
+ 
+      link.attr("d", function(d){
       			//console.log(d.target.branch);
-      	  /*if(document.getElementById("branch").checked == true){
-      			console.log("1");
+      	  //if(document.getElementById("branch").checked == true){
+      		//	console.log("1");
       			if(d.target.branch == d.source.branch){
       				return lineS([{x:d.target.x, y:d.target.y},  
 					{x:d.source.x, y:d.source.y} ]);
@@ -380,19 +402,26 @@ var lineZ= d3.svg.line()
 					return lineZ([{x:d.target.x, y:d.target.y}, 
 								{x:d.source.x, y:d.source.y} ]);
 				}
-			}else{*/
-				console.log("2");
-				if(d.target.commit.author.name == d.source.commit.author.name){
+		  })
+
+ }else{
+	/*link.transition().duration(delay)
+	 .attr("x2", function(d) { return d.source.x; })
+      .attr("y2", function(d) { return d.source.y; })
+      .attr("x1", function(d) { return d.target.x; })
+      .attr("y1", function(d) { return d.target.y; })*/
+      link.attr("d", function(d){
+      		if(d.target.commit.author.name == d.source.commit.author.name){
       				return lineS([{x:d.target.x, y:d.target.y},  
 					{x:d.source.x, y:d.source.y} ]);
-				}else{
-					return lineZ([{x:d.target.x, y:d.target.y}, 
-								{x:d.source.x, y:d.source.y} ]);
-				}
-			//}
+			}else{
+				return lineZ([{x:d.target.x, y:d.target.y}, 
+						{x:d.source.x, y:d.source.y} ]);
+				
+			}
 		});
 		
-
+ }
   node.transition().duration(delay)
       .attr("transform", function(d) { 
         return "translate("+d.x+","+d.y+")"; 
@@ -441,6 +470,34 @@ var link = display.selectAll(".link")
             //.attr("d", line(lineData))
             .attr("class", "link")
             .attr("marker-end", "url(#end)");
+            
+            
+            /*link.attr("stroke-width", function(d, i) {
+            	console.log(d);
+			if(d.target.branch == d.source.branch){
+				return "5px";
+			}else{
+				return "1px";
+			}
+			});*/
+   		
+            console.log(link.data());
+            
+            
+            
+        
+trial();    
+function trial(){
+	if(document.getElementById("branch").checked == true){  
+		link.attr("class", "group");
+		//if(d.target.branch == d.source.branch){
+		
+		//}
+	}else{
+		link.attr("class", "link");
+	}
+}
+
 
 var node = display.selectAll(".node")
               .data(graph.nodes)
@@ -453,10 +510,12 @@ node.append("circle")
 			return fill(d.branch);
 			
    })
+   .attr("style", "fill-opacity: 0; stroke-opacity: 0")
    .on("mouseover", function(d) {
    		d3.selectAll("circle").attr("class", "hover");
    		d3.select(this).attr("class", "target");
    		d3.select(this).attr("fill", "red");
+   		d3.select(this).attr("style", "fill-opacity: 1; stroke-opacity: .5");
    	//Get this bar's x/y values, then augment for the tooltip
 	var xPosition = parseFloat(d.x+15) ;
 	var yPosition = parseFloat(d.y+45) ;
@@ -480,6 +539,7 @@ d3.select("#tooltip").classed("hidden", false);
    		d3.select(this).attr("fill", function(d) {
 			return fill(d.branch);
 		});
+		d3.select(this).attr("style", "fill-opacity: 0; stroke-opacity: 0");
    		//Hide the tooltip
 		d3.select("#tooltip").classed("hidden", true);
    })

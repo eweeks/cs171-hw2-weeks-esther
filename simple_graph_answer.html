@@ -407,17 +407,19 @@ display.append("svg:defs").selectAll("marker")
 //console.log("It is "+ graph.links[0].source.n);
 
     
-var line=  d3.svg.line()
+/*var line=  d3.svg.line()
 			.x(function(d) { return d.x; })
 			.y(function(d) { return d.y; })
-			.interpolate("linear");    
+			.interpolate("linear");    */
      
 var link = display.selectAll(".link")
             .data(graph.links)
             .enter().append("path")
             //.attr("d", line(lineData))
-            .attr("class", "link")
-            .attr("marker-end", "url(#end)");
+            .attr("class", "link");
+            
+            
+            link.attr("marker-end", "url(#end)");
 
 var node = display.selectAll(".node")
               .data(graph.nodes)
