@@ -23,18 +23,24 @@
     fill: red;
   }
   
-  //.hover{
-  	//stroke-opacity: .5;
-  	//fill-opacity: .5;
-  //}
+body {
+	margin-top: 0;
+}
   
   .target{
   	stroke-opacity: 1;
   	fill-opacity: 1;
   }
   
-  .checked{
+  #buttons{
+  	position: fixed;
+  	background: white;
+  	margin: 0;
+  	border: 
+  }
   
+  .display{
+  	margin-top: 100px;
   }
   
   #tooltip {
@@ -71,6 +77,7 @@
         <p>Author: <span id="value">100</span></p>
 </div>
 
+  <div id="buttons">
   <form>
   Scale:
     <label><input type="radio" name="scale" value="linear" checked>Linear</label>
@@ -81,6 +88,7 @@
     <label><input type="radio" name="sort" value="branch" id="branch" checked>Branch</label>
     <label><input type="radio" name="sort" value="author" id="author">Author</label>
   </form>
+  </div>
 
 <script>
 
@@ -90,6 +98,10 @@ var width = 1000,
 var svg = d3.select("body").append("svg")
             .attr("width", width)
             .attr("height", height);
+            
+var header = d3.select("#buttons").append("svg")
+			.attr("width", width)
+			.attr("height", "100");
 
 var fill = d3.scale.category10();
 var git = "afaqurk/linux-dash";
@@ -170,8 +182,9 @@ var lScale = d3.scale.ordinal()
 			.rangeRoundBands([0, width], 0.09);
 
 
-	svg
+	header
 	.append("g")
+	.attr("id", "stay")
     .attr("class", "branches")
 	.selectAll("text")
 	.data(names.name)
