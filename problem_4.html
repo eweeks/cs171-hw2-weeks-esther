@@ -313,19 +313,18 @@ function y_sort(){
   graph.nodes.forEach(function(d, i) {
     //console.log(graph.nodes[i].commit.author.name);
     if(document.getElementById("branch").checked == true){
-    	if(graph.nodes[i].branch=="master"){
-    		d.x = width/2;
-    }else{
     	names.name.forEach(function(e, j){
     		if(graph.nodes[i].branch==e){
+    			if(j==0){
+    				d.x = (width/names.name.length)*j+padding;
+    			}else{
     			//console.log(e);
-    			d.x = (width/names.name.length)*j+padding;
-    		}	
-    	
-    	} );
+    				d.x = (width/names.name.length)*j;
+    			}
+    		}
     	
     	//d.y = (height/2)+30;
-    }
+    	})
     
     }else {
     	 authors.author.forEach(function(e, j){
