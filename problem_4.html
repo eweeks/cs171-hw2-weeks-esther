@@ -406,7 +406,7 @@ var lScale = d3.scale.linear()
 //scale for node sizes
 var nScale = d3.scale.linear()
 			.domain([ 0, d3.max(authors.count) ])
-			.range([2, 10]);
+			.range([3, 11]);
 
 //var m = d3.max(names.count)
 //console.log(lScale(100));
@@ -496,7 +496,7 @@ if(document.getElementById("branch").checked == true){
 
 				return nScale(r);
 			}else{
-				return "1.5px";
+				return "1px";
 			}
 		
 		})
@@ -557,7 +557,7 @@ var link = display.selectAll(".link")
             //.attr("d", line(lineData))
             .attr("class", "link")
             .on("mouseover", function(d) {
-            	console.log(d.source.branch);
+            	//console.log(d.source.branch);
             	if(document.getElementById("branch").checked == true){ 
             		var c = d.source.branch;
    					d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5");
@@ -574,8 +574,10 @@ var link = display.selectAll(".link")
         
 trial();    
 
-
-			
+//scale for squares
+var sScale = d3.scale.linear()
+	.domain([ 0, d3.max(authors.count) ])
+	.range([5, 13]);
 //console.log(nScale(40));
 			
 function trial(){
@@ -595,8 +597,33 @@ function trial(){
 		.attr("ry", 0)
 		.attr("rx", 0)
 		.attr("style", "fill-opacity: 1; stroke-opacity: 1")
-		.attr("width", 10)
-    	.attr("height", 10);
+		.attr("width", function(d, i){
+				var s;
+				console.log(d);
+					authors.author.map(function(e, j){
+						if(d.commit.author.name == e){
+							s=j;
+						}
+					});
+				
+					var r=authors.count[s];
+				console.log(r);
+					return sScale(r);
+			})
+		
+    	.attr("height", function(d, i){
+				var s;
+				console.log(d);
+					authors.author.map(function(e, j){
+						if(d.commit.author.name == e){
+							s=j;
+						}
+					});
+				
+					var r=authors.count[s];
+				console.log(r);
+					return sScale(r);
+			});
 	}
 }
 
