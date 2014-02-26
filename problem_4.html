@@ -96,7 +96,7 @@ var git = "afaqurk/linux-dash";
 var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
-var names = [ ];
+var names = {name:[], count:[] };
 var authors = [ ];
 var remaining = 1;
 var padding = 25;
@@ -105,22 +105,24 @@ var padding = 25;
 
 
 var branchD = d3.json("https://api.github.com/repos/"+git+"/branches", function(error, data1){
-		names = data1.map(function(d, i){
+		data1.map(function(d, i){
 			//if(names.length <= 3){
-				return data1[i].name;
+				names.name.push(data1[i].name);
+				console.log(names);
 			//}
 		});
 	if(! --remaining) commitD();
 });
 
 function commitD(){
-	remaining = names.length;
-	names.forEach(function(d, i){
-	
-  var dataset = d3.json("https://api.github.com/repos/"+git+"/commits"+"?sha="+names[i], function(error, data){
+
+	remaining = names.name.length;
+	names.name.forEach(function(d, i){
+	console.log(d);
+  var dataset = d3.json("https://api.github.com/repos/"+git+"/commits"+"?sha="+d, function(error, data){
 
 data.map(function(e, j) {  
-  graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names[i], date: Date.parse(data[j].commit.author.date),
+  graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names.name[i], date: Date.parse(data[j].commit.author.date),
   parents: data[j].parents } );
 }); 
 
@@ -149,7 +151,7 @@ function map (){
 
 //labels scale
 var lScale = d3.scale.ordinal()
-			.domain(d3.range(names.length))
+			.domain(d3.range(names.name.length))
 			.rangeRoundBands([0, width], 0.09);
 
 
@@ -163,9 +165,9 @@ var lScale = d3.scale.ordinal()
     .text(function(d) { return d; })
     .attr("x", function(d, i) { 
     		if(i==0){
-    			return  (width/names.length)*i+padding;
+    			return  (width/names.name.length)*i+padding;
     		}else{
-    			return  (width/names.length)*i;
+    			return  (width/names.name.length)*i;
     		}
     })
     .attr("y", function(d, i){
@@ -272,10 +274,10 @@ function y_sort(){
     	if(graph.nodes[i].branch=="master"){
     		d.x = width/2;
     }else{
-    	names.forEach(function(e, j){
+    	names.name.forEach(function(e, j){
     		if(graph.nodes[i].branch==e){
     			//console.log(e);
-    			d.x = (width/names.length)*j+padding;
+    			d.x = (width/names.name.length)*j+padding;
     		}	
     	
     	} );
@@ -333,7 +335,7 @@ function a_sort(){
 
 function b_sort(){
 	y_sort();
-	var s = d3.select(".branches").selectAll("text").data(names);
+	var s = d3.select(".branches").selectAll("text").data(names.name);
 
     s.enter()
 	.append("text");
@@ -346,9 +348,9 @@ function b_sort(){
     .attr("x", function(d, i) { 
     	//console.log(d);
     	if(i==0){
-    		return (width/names.length)*i+padding;
+    		return (width/names.name.length)*i+padding;
     	}else{
-    		return (width/names.length)*i;
+    		return (width/names.name.length)*i;
     	}
     })
     .attr("y", function(d, i){
@@ -510,7 +512,9 @@ function trial(){
 		
 		//}
 	}else{
-		link.attr("class", "link");
+		
+		//set different class to adjust styles specific to sorting by author
+		link.attr("class", "group");
 	}
 }
 
