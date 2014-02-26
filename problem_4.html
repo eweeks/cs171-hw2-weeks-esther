@@ -92,7 +92,7 @@ var svg = d3.select("body").append("svg")
             .attr("height", height);
 
 var fill = d3.scale.category10();
-var git = "afaqurk/linux-dash";
+var git = "Caleydo/caleydo";
 var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
@@ -140,6 +140,8 @@ data.map(function(d, i){
 	})
 })
 
+
+
  if(! --remaining) map();
 });
 })
@@ -148,6 +150,31 @@ data.map(function(d, i){
 
 
 function map (){
+
+var many;
+var times=0;
+
+names.name.map(
+	function(d, i){
+	//console.log(name);
+		many=0;
+		times=times+1;
+		console.log(times);
+	//console.log(graph.nodes.branch);
+	graph.nodes.map(function(e, j){
+		if(d == e.branch){
+			many=many+1;
+			//names.count[i].push(count);
+			console.log("e is"+e.branch);
+			console.log("n is"+d);
+			console.log("match at "+ j);
+		}
+	})
+	names.count.push({"count":many});
+	console.log(names);	
+});
+
+
 
 //labels scale
 var lScale = d3.scale.ordinal()
@@ -540,7 +567,7 @@ node.append("circle")
    		d3.select(this).attr("fill", "red");
    		d3.select(this).attr("style", "fill-opacity: 1; stroke-opacity: .5");
    		
-   		var c = d.branch
+   		var c = d.branch;
    		d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5");
    	
    	//Get this circles position for tooltip
