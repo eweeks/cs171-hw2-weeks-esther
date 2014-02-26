@@ -188,9 +188,9 @@ names.name.map(
     .text(function(d) { return d; })
     .attr("x", function(d, i) { 
     		if(i==0){
-    			return  ((width/names.name.length)*i+padding)+5;
+    			return  (width/names.name.length)*i+padding;
     		}else{
-    			return  ((width/names.name.length)*i)+5;
+    			return  (width/names.name.length)*i;
     		}
     })
     .attr("y", function(d, i){
@@ -243,7 +243,7 @@ function force_layout() {
 
 var yScale = d3.scale.ordinal()
                 .domain(d3.range(graph.nodes.length))
-                .rangeRoundBands([150, height], 1);
+                .rangeRoundBands([170, height], 1);
 
 var min = d3.min(graph.nodes, function(d){
 	return d.date;
@@ -356,9 +356,9 @@ function a_sort(){
     .attr("x", function(d, i) { 
     	//console.log(d);
     	if(i==0){
-    		return ((width/authors.author.length)*i+padding)+5;
+    		return (width/authors.author.length)*i+padding;
     	}else{
-    		return ((width/authors.author.length)*i)+5;
+    		return (width/authors.author.length)*i;
     	}
     })
     .attr("y", function(d, i){
@@ -441,11 +441,11 @@ if(document.getElementById("branch").checked == true){
       	  //if(document.getElementById("branch").checked == true){
       		//	console.log("1");
       			if(d.target.branch == d.source.branch){
-      				return lineS([{x:d.target.x+5, y:d.target.y+5},  
-					{x:d.source.x+5, y:d.source.y+5} ]);
+      				return lineS([{x:d.target.x, y:d.target.y},  
+					{x:d.source.x, y:d.source.y} ]);
 				}else{
-					return lineZ([{x:d.target.x+5, y:d.target.y+5}, 
-								{x:d.source.x+5, y:d.source.y+5} ]);
+					return lineZ([{x:d.target.x, y:d.target.y}, 
+								{x:d.source.x, y:d.source.y} ]);
 				}
 		  }).attr("stroke-width", function(d, i) {
 			if(d.target.branch == d.source.branch){
@@ -474,11 +474,11 @@ if(document.getElementById("branch").checked == true){
  }else{
       link.attr("d", function(d){
       		if(d.target.commit.author.name == d.source.commit.author.name){
-      				return lineS([{x:d.target.x+5, y:d.target.y+5},  
-					{x:d.source.x+5, y:d.source.y+5} ]);
+      				return lineS([{x:d.target.x, y:d.target.y},  
+					{x:d.source.x, y:d.source.y} ]);
 			}else{
-				return lineZ([{x:d.target.x+5, y:d.target.y+5}, 
-						{x:d.source.x+5, y:d.source.y+5} ]);
+				return lineZ([{x:d.target.x, y:d.target.y}, 
+						{x:d.source.x, y:d.source.y} ]);
 				
 			}
 		}).attr("stroke-width", function(d, i){
@@ -486,7 +486,7 @@ if(document.getElementById("branch").checked == true){
 				var s;
 				console.log(d);
 				authors.author.map(function(e, j){
-						if(d.source.commit.author.name == e){
+						if(d.source.commit.author.name == e || d.target.commit.author.name == e ){
 							s=j;
 						}
 				});
@@ -557,17 +557,29 @@ var link = display.selectAll(".link")
             //.attr("d", line(lineData))
             .attr("class", "link")
             .on("mouseover", function(d) {
-            	//console.log(d.source.branch);
-            	if(document.getElementById("branch").checked == true){ 
+            	
             		var c = d.source.branch;
-   					d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5");
-   				}
+   					d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5")
+   					.attr("fill", function(d) {
+						return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
+			
+   					});
+   				
             
             })
             .on("mouseout", function(d){
             	if(document.getElementById("branch").checked == true){ 
             		var c = d.source.branch;
-   					d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0");
+   					d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0")
+   					.attr("fill", function(d) {
+							return fill(d.branch);
+					});
+   				}else{
+   					var c = d.source.branch;
+   					d3.selectAll("."+c)
+   					.attr("fill", function(d) {
+							return fill(d.branch);
+					});
    				}
             });
              
@@ -577,29 +589,30 @@ trial();
 //scale for squares
 var sScale = d3.scale.linear()
 	.domain([ 0, d3.max(authors.count) ])
-	.range([5, 13]);
+	.range([4, 10]);
 //console.log(nScale(40));
 			
 function trial(){
-	if(document.getElementById("branch").checked == true){  
+		if(document.getElementById("branch").checked == true){
 		link.attr("class", "group");
-		d3.selectAll("rect")
-		.attr("rx", 100)
-		.attr("ry", 100);
+		 
+		 d3.selectAll("circle")
+		.attr("style", "fill-opacity: 0; stroke-opacity: 0")
+		.attr("r", 6);
 	}else{
-		
-		//set different class to adjust styles specific to sorting by author
+
+	//set different class to adjust styles specific to sorting by author
+
 		link.attr("class", "group")
 		//.attr("stroke-width", "2px");
 		
 		
-		d3.selectAll("rect")
-		.attr("ry", 0)
-		.attr("rx", 0)
+		d3.selectAll("circle")
+		//.attr("ry", 0)
+		//.attr("rx", 0)
 		.attr("style", "fill-opacity: 1; stroke-opacity: 1")
-		.attr("width", function(d, i){
+		.attr("r", function(d, i){
 				var s;
-				console.log(d);
 					authors.author.map(function(e, j){
 						if(d.commit.author.name == e){
 							s=j;
@@ -607,23 +620,9 @@ function trial(){
 					});
 				
 					var r=authors.count[s];
-				console.log(r);
-					return sScale(r);
-			})
-		
-    	.attr("height", function(d, i){
-				var s;
-				console.log(d);
-					authors.author.map(function(e, j){
-						if(d.commit.author.name == e){
-							s=j;
-						}
-					});
-				
-					var r=authors.count[s];
-				console.log(r);
 					return sScale(r);
 			});
+		
 	}
 }
 
@@ -633,11 +632,8 @@ var node = display.selectAll(".node")
             .enter()
               .append("g").attr("class", "node");
 
-node.append("rect")
-	.attr("rx", 100)
-	.attr("ry", 100)
-    .attr("width", 10)
-    .attr("height", 10)
+node.append("circle")
+	.attr("r", 6)
     .attr("fill", function(d) {
 			return fill(d.branch);
 			
@@ -655,19 +651,29 @@ node.append("rect")
    .attr("stroke-width", 0)
 
    .on("mouseover", function(d) {
-   		d3.selectAll("rect")//.attr("class", "hover");
+   		//d3.selectAll("circle")//.attr("class", "hover");
    		//d3.select(this).attr("class", "target");
-   		if(document.getElementById("branch").checked == true){  
-   		
-   		
-   		d3.select(this).attr("fill", "red");
-   		d3.select(this).attr("style", "fill-opacity: .8; stroke-opacity: .5");
-   		
-   		var c = d.branch;
-   		d3.selectAll("."+c).attr("style", "fill-opacity: .8; stroke-opacity: .5");
-   		}else{
+   		//if(document.getElementById("branch").checked == true){  
+   		if(document.getElementById("branch").checked == true){
    			d3.select(this).attr("fill", "red");
-   		}
+    		d3.select(this).attr("style", "fill-opacity: .8; stroke-opacity: .5");
+   			
+   			var c = d.branch;
+    	d3.selectAll("."+c).attr("style", "fill-opacity: .8; stroke-opacity: .5")
+    	.attr("fill", function(d) {
+			return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
+			
+   		});
+    	
+    	}else{
+    		d3.select(this).attr("fill", "red");
+    			var c = d.branch;
+    	d3.selectAll("."+c)
+    	.attr("fill", function(d) {
+			return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
+			
+   		});
+    	}
    	
    	//Get this circles position for tooltip
 	var xPosition = parseFloat(d.x+15) ;
@@ -695,11 +701,19 @@ d3.select("#tooltip").classed("hidden", false);
 				return fill(d.branch);
 			});
 			d3.select(this).attr("style", "fill-opacity: 0; stroke-opacity: 0");
-   			d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0");
+   			d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0")
+   					.attr("fill", function(d) {
+							return fill(d.branch);
+					});
    		}else{
    			d3.select(this).attr("fill", function(d) {
 				return fill(d.branch);
 			});
+			var c = d.branch
+			d3.selectAll("."+c)
+   					.attr("fill", function(d) {
+							return fill(d.branch);
+					});
    		}	
    			//Hide the tooltip
 			d3.select("#tooltip").classed("hidden", true);
