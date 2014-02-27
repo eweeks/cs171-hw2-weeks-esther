@@ -635,64 +635,58 @@ function map (){
 					});
 			}
 
-	//Get this circles position for tooltip
-	var xPosition = parseFloat(d.x+10) ;
-	var yPosition = parseFloat(d.y) ;
-	
-	var time= new Date(d.date);
-	var tx = time.toString();
+			//Get this circles position for tooltip
+			var xPosition = parseFloat(d.x+10) ;
+			var yPosition = parseFloat(d.y) ;
+			
+			var time= new Date(d.date);
+			var tx = time.toString();
 
-	//Update the tooltip position and value
-d3.select("#tooltip")
-  .style("left", xPosition + "px")
-  .style("top", yPosition + "px")
-  .select("#value")
-  .text(d.commit.author.name);
-  
-  
-  
-  d3.select("#date")
-  	.text(tx);
-  	
-  	
-  d3.select("#title")
-	.text(d.branch)
-//Show the tooltip
-d3.select("#tooltip").classed("hidden", false);
+			//Update the tooltip position and value
+			d3.select("#tooltip")
+				.style("left", xPosition + "px")
+				.style("top", yPosition + "px")
+				.select("#value")
+				.text(d.commit.author.name);
 
-})
+			d3.select("#date")
+				.text(tx);
 
-   .on("mouseout", function(d){
-   		//d3.selectAll("circle").attr("class", "");
-   		if(document.getElementById("branch").checked == true){  
-   			var c = d.branch
-   			d3.select(this).attr("fill", function(d) {
-				return fill(d.branch);
-			});
-			d3.select(this).attr("style", "fill-opacity: 0; stroke-opacity: 0");
-   			d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0")
-   					.attr("fill", function(d) {
+			d3.select("#title")
+				.text(d.branch)
+
+			//Show the tooltip
+			d3.select("#tooltip").classed("hidden", false);
+		})
+
+		.on("mouseout", function(d){
+			if(document.getElementById("branch").checked == true){
+				var c = d.branch;
+				d3.select(this).attr("fill", function(d) {
+					return fill(d.branch);
+				});
+				d3.select(this).attr("style", "fill-opacity: 0; stroke-opacity: 0");
+				d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0")
+					.attr("fill", function(d) {
 							return fill(d.branch);
 					});
-   		}else{
-   			d3.select(this).attr("fill", function(d) {
-				return fill(d.branch);
-			});
-			var c = d.branch
-			d3.selectAll("."+c)
-   					.attr("fill", function(d) {
-							return fill(d.branch);
+			}else{
+				d3.select(this).attr("fill", function(d) {
+					return fill(d.branch);
+				});
+				var c = d.branch;
+				d3.selectAll("."+c)
+					.attr("fill", function(d) {
+						return fill(d.branch);
 					});
-   		}	
-   			//Hide the tooltip
+			}	
+			//Hide the tooltip
 			d3.select("#tooltip").classed("hidden", true);
-   })
-   
+		})
 
-force_layout();
-line_layout();
-}
-
+	force_layout();
+	line_layout();
+	}
 
 </script>
 </body>
