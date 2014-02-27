@@ -177,46 +177,43 @@ function commitD(){
 	})
 }
 
-
+//Maps all data to view
 function map (){
+	
+	//gets count of the number of commits per branch
+	names.name.map(
+		function(d, i){
+			var many=0;
+			graph.nodes.map(function(e, j){
+				if(d == e.branch){
+					many=many+1;
+				}
+			})
+			names.count.push(many);	
+		});
 
+		header
+			.append("g")
+			.attr("id", "stay")
+			.attr("class", "branches")
+			.selectAll("text")
+			.data(names.name)
+			.enter()
+			.append("text")
+			.text(function(d) { return d; })
+			.attr("x", function(d, i) { 
+				if(i==0){
+					return  (width/names.name.length)*i+padding;
+				}else{
+					return  (width/names.name.length)*i;
+				}
+			})
+			.attr("y", function(d, i){
+					return  padding;
+			})
+			.attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
 
-//gets count of the number of commits per branch
-names.name.map(
-	function(d, i){
-		var many=0;
-	graph.nodes.map(function(e, j){
-		if(d == e.branch){
-			many=many+1;
-		}
-	})
-	names.count.push(many);	
-});
-
-
-
-	header
-	.append("g")
-	.attr("id", "stay")
-    .attr("class", "branches")
-	.selectAll("text")
-	.data(names.name)
-    .enter()
-    .append("text")
-    .text(function(d) { return d; })
-    .attr("x", function(d, i) { 
-    		if(i==0){
-    			return  (width/names.name.length)*i+padding;
-    		}else{
-    			return  (width/names.name.length)*i;
-    		}
-    })
-    .attr("y", function(d, i){
-    	return  padding;
-    })
-    .attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
-
-var display = svg.append("g").attr("class", "display");
+		var display = svg.append("g").attr("class", "display");
 
 set_links();
 //console.log(graph);
