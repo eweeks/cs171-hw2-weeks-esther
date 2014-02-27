@@ -181,8 +181,7 @@ function commitD(){
 function map (){
 	
 	//gets count of the number of commits per branch
-	names.name.map(
-		function(d, i){
+	names.name.map(function(d, i){
 			var many=0;
 			graph.nodes.map(function(e, j){
 				if(d == e.branch){
@@ -190,7 +189,7 @@ function map (){
 				}
 			})
 			names.count.push(many);	
-		});
+	});
 
 		header
 			.append("g")
@@ -215,109 +214,95 @@ function map (){
 
 		var display = svg.append("g").attr("class", "display");
 
-set_links();
+	set_links();
 
-function set_links(){
-	//sets up links
-graph.nodes.map(function(d, i){
-	graph.nodes[i].parents.map(function(l, m){
+	//sets up links	
+	function set_links(){
+		graph.nodes.map(function(d, i){
+			graph.nodes[i].parents.map(function(l, m){
+				graph.nodes.map(function(e, j){
+					if(e.sha == l.sha){
+						graph.links.push({"source":i, "target":j});
+					}
+				})
+			})
+		})
+	}
+
+	// Generate the force layout
+	var force = d3.layout.force()
+		.size([width, height])
+		.charge(-50)
+		.linkDistance(10)
+		.on("tick", tick)
+		.on("start", function(d) {})
+		.on("end", function(d) {});
+
+	function tick(d) {
+		graph_update(0);
+	}
+
+	//Force Function
+	function force_layout() {
+		force.nodes(graph.nodes)
+			.links(graph.links)
+			.start();
+	}
+
+	//Y Scale
+	var yScale = d3.scale.ordinal()
+		.domain(d3.range(graph.nodes.length))
+		.rangeRoundBands([250, height], 1);
+
+	//Min and Max for time scale
+	var min = d3.min(graph.nodes, function(d){
+		return d.date;
+	});
+
+	var max = d3.max(graph.nodes, function(d){
+		return d.date;
+	});
+
+	//Time Scale
+	var tScale = d3.time.scale()
+		.domain([min, max])
+		.range([250, height-padding]);
+			
+	//function to set time scale
+	function time(){
+		graph.nodes.forEach(function(d, i) {
+			 d.y = tScale(d.date);
+		});
+		graph_update(500);
+	};
+
+	//author data
+	graph.nodes.forEach(function(d, i){
+		if(authors.author.indexOf(graph.nodes[i].commit.author.name) == -1){
+			authors.author.push(graph.nodes[i].commit.author.name);
+		}
+	});
+
+	//gets count of the number of commits per author
+	authors.author.map(function(d, i){
+		var many=0;
 		graph.nodes.map(function(e, j){
-			if(e.sha == l.sha){
-				graph.links.push({"source":i, "target":j});
+			if(d == e.commit.author.name){
+				many=many+1;
 			}
 		})
-	})
-})
+		authors.count.push(many);
+	});
 
-}
-
-//console.log(graph);
-
-// Generate the force layout
-var force = d3.layout.force()
-    .size([width, height])
-    .charge(-50)
-    .linkDistance(10)
-    .on("tick", tick)
-    .on("start", function(d) {})
-    .on("end", function(d) {})
-
-function tick(d) {
-
-  graph_update(0);
-}
-
-
-function force_layout() {
-
- force.nodes(graph.nodes)
-      .links(graph.links)
-      .start();
-}
-
-var yScale = d3.scale.ordinal()
-                .domain(d3.range(graph.nodes.length))
-                .rangeRoundBands([250, height], 1);
-
-var min = d3.min(graph.nodes, function(d){
-	return d.date;
-});
-
-//console.log(min);
-
-var max = d3.max(graph.nodes, function(d){
-	return d.date;
-});
-//console.log(max);
-var tScale = d3.time.scale()
-			.domain([min, max])
-			.range([250, height-padding]);
-			
-//console.log(height);
-			
-function time(){
-	graph.nodes.forEach(function(d, i) {
-    	 d.y = tScale(d.date);
-  });
-  graph_update(500);
-
-};
-
-//author data
-graph.nodes.forEach(function(d, i){
-	if(authors.author.indexOf(graph.nodes[i].commit.author.name) == -1){
-		authors.author.push(graph.nodes[i].commit.author.name);
+	//Function to set the line layout
+	function line_layout() {
+		force.stop();
+		graph.nodes.forEach(function(d, i) {
+			d.y = yScale(i);
+		});
+		
+		y_sort();
 	}
-});
-
-//gets count of the number of commits per author
-authors.author.map(
-	function(d, i){
-		var many=0;
-	graph.nodes.map(function(e, j){
-		if(d == e.commit.author.name){
-			many=many+1;
-		}
-	})
-	authors.count.push(many);	
-});
-
-//console.log(authors);
-
-
-function line_layout() {
-
-  force.stop();
-    graph.nodes.forEach(function(d, i) {
-    //console.log(graph.nodes[i].commit.author.name);
-    	d.y = yScale(i);
- 	 	
- 	 });
-	y_sort();
-  
-
-  //graph_update(500);
-}
 
 
 function y_sort(){
