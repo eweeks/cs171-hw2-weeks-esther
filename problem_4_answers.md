@@ -24,17 +24,24 @@ Lines: Lines are also used to help show connections. In the authors view, the br
 and nodes are larger based on the number of commits a user has made. This helps the viewer
 to see where the activity on the repository is. In both the author and branch view I chose
 to make the lines representing the links between branches or users, thinner and dotted.
-This created a visual difference between the tow, making the chart easier to process.
+This created a visual difference between the two, making the chart easier to process.
 
 Sorting: Sort may be done by author or branch. Ideally, I would have implement more sorting
 options, for example, allowing to sort by user either ascending alphabetical or descending. 
 The same could be applied to branch name. It would also be helpful to sort by amount of 
 activity, showing the most active branches to least active for example. I would also
 like to have options that would allow for showing more information about the repository.
-Showing the currently open issues, for example, and which branch they are one. Also
-showing amount of activity in a commit, such as additions and deletions. 
+Showing the currently open issues, for example, and which branch they are on. Also
+showing amount of activity per commit, such as additions and deletions. 
 
 Issues/Skills and Time limitations:
-	My biggest issue was working with the GitHub data to understand what was going on, 
-	and thus be able to understand if I was correctly representing the data, but also 
-	therefore knowing if the code I wrote was correct and working how I invisioned. 
+
+My biggest issue was working with the GitHub data to understand what was going on, 
+and thus be able to tell if I was correctly representing the data, and also 
+therefore knowing if the code I wrote was correct and working how I invisioned. As mentioned
+there were other ideas I would have liked to implement, but was simply not able to given the
+time. I feel a part of the reason for this was still learning D3. I spent a lot of time
+on understand what was going on with the code, and am stil learning JavaScript, how to 
+work with SVG object and of course D3 itself. Because of this, my graph is simpler than
+my original design, but I did try to implement what I felt were the key features.  
+	
