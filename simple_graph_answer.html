@@ -3,18 +3,17 @@
 <title>Homework 2 Graph</title>
 <style>
   .link {
-    stroke: gray;
-    stroke-width: 1.5px;
+	stroke: gray;
+	stroke-width: 1.5px;
   }
 
   .node {
-    /*fill: #66CC66;*/
-    stroke: #000;
-    stroke-width: 1px;
+	stroke: #000;
+	stroke-width: 1px;
   }
 
   .node:hover {
-    fill: red;
+	fill: red;
   }
   
   .hover{
@@ -23,8 +22,8 @@
   }
   
   .target{
-  	stroke-opacity: 1;
-  	fill-opacity: 1;
+	stroke-opacity: 1;
+	fill-opacity: 1;
   }
 
   #tooltip {
@@ -206,7 +205,7 @@ function map (){
 		graph_update(500);
 	};
 
-	//Gets author data including numb of commits
+	//Gets author data
 	graph.nodes.forEach(function(d, i){
 		if(authors.indexOf(graph.nodes[i].commit.author.name) == -1){
 			authors.push(graph.nodes[i].commit.author.name);
