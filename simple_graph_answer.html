@@ -18,62 +18,58 @@
   }
   
   .hover{
-  	stroke-opacity: .5;
-  	fill-opacity: .5;
+	stroke-opacity: .5;
+	fill-opacity: .5;
   }
   
   .target{
   	stroke-opacity: 1;
   	fill-opacity: 1;
   }
-  
-  .checked{
-  
+
+  #tooltip {
+	position: absolute;
+	width: 200px;
+	height: 80px;
+	padding: 5px;
+	background-color: white;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	pointer-events: none;
+  }
+
+  #tooltip.hidden {
+	display: none;
   }
   
-  #tooltip {
-        position: absolute;
-        width: 200px;
-        height: 80px;
-        padding: 5px;
-        background-color: white;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-        border-radius: 10px;
-        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        pointer-events: none;
-}
-
-#tooltip.hidden {
-        display: none;
-}
-  
-  
   path.link {
-  fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
-}
+	fill: none;
+	stroke: #666;
+	stroke-width: 1.5px;
+  }
 
 </style>
+
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
- <div id="tooltip" class="hidden">
- 	<p>Branch: <span id="title"></span></p>
-        <p>Author: <span id="value">100</span></p>
-</div>
+  <div id="tooltip" class="hidden">
+	<p>Branch: <span id="title"></span></p>
+	<p>Author: <span id="value">100</span></p>
+  </div>
 
   <form>
-  Scale:
-    <label><input type="radio" name="scale" value="linear" checked>Linear</label>
-    <label><input type="radio" name="scale" value="time">Time</label>
+	Scale:
+	<label><input type="radio" name="scale" value="linear" checked>Linear</label>
+	<label><input type="radio" name="scale" value="time">Time</label>
   </form>
   <form>
-  Sort By:
-    <label><input type="radio" name="sort" value="branch" id="branch" checked>Branch</label>
-    <label><input type="radio" name="sort" value="author" id="author">Author</label>
+	Sort By:
+	<label><input type="radio" name="sort" value="branch" id="branch" checked>Branch</label>
+	<label><input type="radio" name="sort" value="author" id="author">Author</label>
   </form>
 
 <script>
@@ -82,8 +78,8 @@ var width = 1250,
     height = 700;
 
 var svg = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+	.attr("width", width)
+	.attr("height", height);
 
 var fill = d3.scale.category10();
 var git = "afaqurk/linux-dash";
@@ -95,374 +91,338 @@ var authors = [ ];
 var remaining = 1
 
 //Get Branch Data
-
-
 var branchD = d3.json("https://api.github.com/repos/"+git+"/branches", function(error, data1){
 		names = data1.map(function(d, i){
-			//if(names.length <=3){
-				return data1[i].name;
-			//}
+			return data1[i].name;
 		});
-	if(! --remaining) commitD();
-});
+		if(! --remaining) commitD();
+	});
 
+//Get Commit Data
 function commitD(){
 	remaining = names.length;
 	names.forEach(function(d, i){
-	
-  var dataset = d3.json("https://api.github.com/repos/"+git+"/commits"+"?sha="+names[i], function(error, data){
+		var dataset = d3.json("https://api.github.com/repos/"+git+"/commits"+"?sha="+names[i], function(error, data){
+				data.map(function(e, j) {  
+				graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names[i],
+					date: Date.parse(data[j].commit.author.date),
+				parents: data[j].parents } );
+			}); 
 
-data.map(function(e, j) {  
-  graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names[i], date: Date.parse(data[j].commit.author.date),
-  parents: data[j].parents } );
-}); 
+			graph.nodes.map(function(d, i){
+				graph.nodes.sort(function(a, b){
+					return d3.ascending(a.date, b.date);
+				});
+			});
 
+			data.map(function(d, i){
+				data[i].parents.map(function(e, j) {
+					parents.parents.push({"parents":e });
+					parents.source.push({"source":data[i].sha});
+				})
+			})
 
-graph.nodes.map(function(d, i){
-	graph.nodes.sort(function(a, b){
-		return d3.ascending(a.date, b.date);
-	});
-});
-
-data.map(function(d, i){
-	data[i].parents.map(function(e, j) {
-		parents.parents.push({"parents":e });
-		parents.source.push({"source":data[i].sha});
+			if(! --remaining) map();
+		});
 	})
-})
-
- if(! --remaining) map();
-});
-})
-
 }
 
-
+//Maps all data to view
 function map (){
-
 	svg
 	.append("g")
-    .attr("class", "branches")
+	.attr("class", "branches")
 	.selectAll("text")
 	.data(names)
-    .enter()
-    .append("text")
-    .text(function(d) { return d; })
-    .attr("y", function(d, i) { 
-    	//console.log(d);
-    	if(d=="master"){
-    		return height/3;
-    	}else{
-    		return (height/3)+(30*(i+1));
-    	}
-    });
-
-var display = svg.append("g").attr("class", "display");
-
-set_links();
-//console.log(graph);
-
-function set_links(){
-	//sets up links
-graph.nodes.map(function(d, i){
-	graph.nodes[i].parents.map(function(l, m){
-		graph.nodes.map(function(e, j){
-			if(e.sha == l.sha){
-				graph.links.push({"source":i, "target":j});
-			}
+	.enter()
+	.append("text")
+	.text(function(d) { return d; })
+	.attr("y", function(d, i) { 
+		if(d=="master"){
+			return height/3;
+		}else{
+			return (height/3)+(30*(i+1));
+		}
+	});
+	
+	var display = svg.append("g").attr("class", "display");
+			set_links();
+	
+	//sets up link data
+	function set_links(){
+		graph.nodes.map(function(d, i){
+			graph.nodes[i].parents.map(function(l, m){
+				graph.nodes.map(function(e, j){
+					if(e.sha == l.sha){
+						graph.links.push({"source":i, "target":j});
+					}
+				})
+			})
 		})
-	})
-})
-
-}
-
-console.log(graph);
-
-// Generate the force layout
-var force = d3.layout.force()
-    .size([width, height])
-    .charge(-50)
-    .linkDistance(10)
-    .on("tick", tick)
-    .on("start", function(d) {})
-    .on("end", function(d) {})
-
-function tick(d) {
-
-  graph_update(0);
-}
-
-
-function force_layout() {
-
- force.nodes(graph.nodes)
-      .links(graph.links)
-      .start();
-}
-
-var xScale = d3.scale.ordinal()
-                .domain(d3.range(graph.nodes.length))
-                .rangeRoundBands([30, width], 1);
-
-var min = d3.min(graph.nodes, function(d){
-	return d.date;
-});
-
-//console.log(min);
-
-var max = d3.max(graph.nodes, function(d){
-	return d.date;
-});
-
-var tScale = d3.time.scale()
-			.domain([min, max])
-			.range([60, width-20]);
-			
-function time(){
-	graph.nodes.forEach(function(d, i) {
-    	 d.x = tScale(d.date);
-  });
-  graph_update(500);
-
-};
-
-//author data
-graph.nodes.forEach(function(d, i){
-	if(authors.indexOf(graph.nodes[i].commit.author.name) == -1){
-		authors.push(graph.nodes[i].commit.author.name);
 	}
-});
 
+	// Generate the force layout
+	var force = d3.layout.force()
+			.size([width, height])
+			.charge(-50)
+			.linkDistance(10)
+			.on("tick", tick)
+			.on("start", function(d) {})
+			.on("end", function(d) {})
 
-function line_layout() {
+	function tick(d) {
+		graph_update(0);
+	}
 
-  force.stop();
-    graph.nodes.forEach(function(d, i) {
-    //console.log(graph.nodes[i].commit.author.name);
-    	d.x = xScale(i);
- 	 	
- 	 });
-	y_sort();
-  
+	function force_layout() {
+		force.nodes(graph.nodes)
+		.links(graph.links)
+		.start();
+	}
 
-  //graph_update(500);
-}
+	//xScale
+	var xScale = d3.scale.ordinal()
+			.domain(d3.range(graph.nodes.length))
+			.rangeRoundBands([70, width], 1);
 
+	//min and max variables for data
+	var min = d3.min(graph.nodes, function(d){
+			return d.date;
+	});
+	var max = d3.max(graph.nodes, function(d){
+			return d.date;
+	});
 
-function y_sort(){
-  graph.nodes.forEach(function(d, i) {
-    //console.log(graph.nodes[i].commit.author.name);
-    if(document.getElementById("branch").checked == true){
-    	if(graph.nodes[i].branch=="master"){
-    	d.y = height/3;
-    }else{
-    	names.forEach(function(e, j){
-    		if(graph.nodes[i].branch==e){
-    			//console.log(e);
-    			d.y = (height/3)+(30*(j+1) );
-    		}	
-    	
-    	} );
-    	
-    	//d.y = (height/2)+30;
-    }
-    
-    }else {
-    	 authors.forEach(function(e, j){
-    		if(graph.nodes[i].commit.author.name==e){
-    			//console.log(e);
-    			d.y = (height/3)+(30*(j+1) );
-    		}
-    	});		
-    }
-   
+	//Time Scale
+	var tScale = d3.time.scale()
+		.domain([min, max])
+		.range([60, width-20]);
+	
+	//function to set time scale
+	function time(){
+		graph.nodes.forEach(function(d, i) {
+			d.x = tScale(d.date);
+		});
+		graph_update(500);
+	};
 
-  });
-  graph_update(500);
+	//Gets author data including numb of commits
+	graph.nodes.forEach(function(d, i){
+		if(authors.indexOf(graph.nodes[i].commit.author.name) == -1){
+			authors.push(graph.nodes[i].commit.author.name);
+		}
+	});
+	
+	//Main layout 
+	function line_layout() {
+		force.stop();
+		graph.nodes.forEach(function(d, i) {
+			d.x = xScale(i);
+		});
+		y_sort();
+	}
 
-}
+	//lays out nodes based on which is checked
+	function y_sort(){
+		graph.nodes.forEach(function(d, i) {
+			if(document.getElementById("branch").checked == true){
+				if(graph.nodes[i].branch=="master"){
+					d.y = height/3;
+				}else{
+					names.forEach(function(e, j){
+						if(graph.nodes[i].branch==e){
+							d.y = (height/3)+(30*(j+1) );
+						}
+					});
+				}
+			}else {
+				authors.forEach(function(e, j){
+					if(graph.nodes[i].commit.author.name==e){
+						d.y = (height/3)+(30*(j+1) );
+					}
+				});
+			}
+		});
+		graph_update(500);
+	}
+	
+	//Function sorts by authors
+	function a_sort(){
+		y_sort();
+		var s = d3.select(".branches").selectAll("text").data(authors);
+		s.enter()
+		.append("text");
+		s.exit()
+		.remove();
 
-function a_sort(){
-	y_sort();
-	var s = d3.select(".branches").selectAll("text").data(authors);
+		s.text(function(d, i) { 
+			return d; })
+		.attr("y", function(d, i) { 
+			if(i==0){
+				return height/3;
+			}else{
+				return (height/3)+(30*(i+1));
+			}
+		});
+	}
 
-    s.enter()
-	.append("text");
-    
-    s.exit()
-    .remove();
-    
-    s.text(function(d, i) { 
-    	return d; })
-    .attr("y", function(d, i) { 
-    	//console.log(d);
-    	if(i==0){
-    		return height/3;
-    	}else{
-    		return (height/3)+(30*(i+1));
-    	}
-    });
-    	
-}
-
-function b_sort(){
+	//Function sorts by branches
+	function b_sort(){
 	y_sort();
 	var s = d3.select(".branches").selectAll("text").data(names);
-
-    s.enter()
+	s.enter()
 	.append("text");
-    
-    s.exit()
-    .remove();
-    
-    s.text(function(d, i) { 
-    	return d; })
-    .attr("y", function(d, i) { 
-    	//console.log(d);
-    	if(d=="master"){
-    		return height/3;
-    	}else{
-    		return (height/3)+(30*(i+1));
-    	}
-    });
-
+	s.exit()
+	.remove();
+	
+	s.text(function(d, i) { 
+			return d; })
+	.attr("y", function(d, i) {
+		if(d=="master"){
+			return height/3;
+		}else{
+			return (height/3)+(30*(i+1));
+		}
+	});
 }
 
-function graph_update(delay) {
-	
-	      
-var lineS=  d3.svg.line()
-			.x(function(d) { return d.x; })
-			.y(function(d) { return d.y; })
-			.interpolate("linear"); 
+	//Updates Graph
+	function graph_update(delay) {
+		var lineS= d3.svg.line()
+				.x(function(d) { return d.x; })
+				.y(function(d) { return d.y; })
+				.interpolate("linear");
 
-var lineZ= d3.svg.line()
-			.x(function(d) { return d.x; })
-			.y(function(d) { return d.y; })
-			.interpolate("step-before");
-	  
-  link.transition().duration(delay)
-      .attr("x1", function(d) { return d.target.x; })
-      .attr("y1", function(d) { return d.target.y; })
-      .attr("x2", function(d) { return d.source.x; })
-      .attr("y2", function(d) { return d.source.y; })
-      .attr("d", function(d){
-      			//console.log(d.target.branch);
-      	  /*if(document.getElementById("branch").checked == true){
-      			console.log("1");
-      			if(d.target.branch == d.source.branch){
-      				return lineS([{x:d.target.x, y:d.target.y},  
-					{x:d.source.x, y:d.source.y} ]);
-				}else{
-					return lineZ([{x:d.target.x, y:d.target.y}, 
-								{x:d.source.x, y:d.source.y} ]);
-				}
-			}else{*/
-				console.log("2");
-				if(d.target.commit.author.name == d.source.commit.author.name){
-      				return lineS([{x:d.target.x, y:d.target.y},  
-					{x:d.source.x, y:d.source.y} ]);
-				}else{
-					return lineZ([{x:d.target.x, y:d.target.y}, 
-								{x:d.source.x, y:d.source.y} ]);
-				}
-			//}
+		var lineZ= d3.svg.line()
+				.x(function(d) { return d.x; })
+				.y(function(d) { return d.y; })
+				.interpolate("step-before");
+		
+		link.transition().duration(delay)
+		.attr("x1", function(d) { return d.target.x; })
+		.attr("y1", function(d) { return d.target.y; })
+		.attr("x2", function(d) { return d.source.x; })
+		.attr("y2", function(d) { return d.source.y; })
+		.attr("stroke", function(d, i){
+			return fill(d.source.branch);
+		})
+		.attr("marker-end", function(d, i){
+			if(d.target.branch != d.source.branch){
+				return "url(#end)";
+			}else{
+				return "";
+			}
 		});
 		
-
-  node.transition().duration(delay)
-      .attr("transform", function(d) { 
-        return "translate("+d.x+","+d.y+")"; 
-      });
-}
-
-d3.select("input[value=\"linear\"]").on("click", line_layout );
-d3.select("input[value=\"time\"]").on("click", time);
-d3.select("input[value=\"branch\"]").on("click", function(d, i){ 
-	b_sort();
-	d3.select(this).attr("class", "checked");
-	d3.select("#author").attr("class", "");
-	});
-d3.select("input[value=\"author\"]").on("click", function(d, i){ 
-	a_sort();
-	d3.select(this).attr("class", "checked");
-	d3.select("#branch").attr("class", "");
-	});
-
-
-// build the arrow.
-display.append("svg:defs").selectAll("marker")
-    .data(["end"])      // Different link/path types can be defined here
-  .enter().append("svg:marker")    // This section adds in the arrows
-    .attr("id", String)
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 15)
-    .attr("refY", -1.5)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
-    .attr("orient", "auto")
-  	.append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-    
-//console.log("It is "+ graph.links[0].source.n);
-
-    
-/*var line=  d3.svg.line()
-			.x(function(d) { return d.x; })
-			.y(function(d) { return d.y; })
-			.interpolate("linear");    */
-     
-var link = display.selectAll(".link")
-            .data(graph.links)
-            .enter().append("path")
-            //.attr("d", line(lineData))
-            .attr("class", "link");
-            
-            
-            link.attr("marker-end", "url(#end)");
-
-var node = display.selectAll(".node")
-              .data(graph.nodes)
-            .enter()
-              .append("g").attr("class", "node");
-
-node.append("circle")
-    .attr("r", 5)
-    .attr("fill", function(d) {
-			return fill(d.branch);
-			
-   })
-   .on("mouseover", function(d) {
-   		d3.selectAll("circle").attr("class", "hover");
-   		d3.select(this).attr("class", "target");
-   		d3.select(this).attr("fill", "red");
-   	//Get this bar's x/y values, then augment for the tooltip
-	var xPosition = parseFloat(d.x+15) ;
-	var yPosition = parseFloat(d.y+45) ;
-
-	//Update the tooltip position and value
-d3.select("#tooltip")
-  .style("left", xPosition + "px")
-  .style("top", yPosition + "px")
-  .select("#value")
-  .text(d.commit.author.name);
-  
-  d3.select("#title")
-	.text(d.branch)
-//Show the tooltip
-d3.select("#tooltip").classed("hidden", false);
-
-})
-
-   .on("mouseout", function(d){
-   		d3.selectAll("circle").attr("class", "");
-   		d3.select(this).attr("fill", function(d) {
-			return fill(d.branch);
+		//if sorting by branch...
+		if(document.getElementById("branch").checked == true){
+			link.attr("d", function(d){
+				if(d.target.branch == d.source.branch){
+					return lineS([{x:d.target.x, y:d.target.y},
+						{x:d.source.x, y:d.source.y} ]);
+				}else{
+					return lineZ([{x:d.target.x, y:d.target.y},
+						{x:d.source.x, y:d.source.y} ]);
+				}
+			})
+		}else{
+			link.attr("d", function(d){
+				if(d.target.commit.author.name == d.source.commit.author.name){
+					return lineS([{x:d.target.x, y:d.target.y},
+						{x:d.source.x, y:d.source.y} ]);
+				}else{
+					return lineZ([{x:d.target.x, y:d.target.y},
+						{x:d.source.x, y:d.source.y} ]);
+				}
+			});
+		}
+		
+		node.transition().duration(delay)
+		.attr("transform", function(d) {
+			return "translate("+d.x+","+d.y+")";
 		});
-   		//Hide the tooltip
-		d3.select("#tooltip").classed("hidden", true);
-   })
-   
+	}
+
+	//Form Buttons On Click
+	d3.select("input[value=\"linear\"]").on("click", line_layout );
+	d3.select("input[value=\"time\"]").on("click", time);
+	d3.select("input[value=\"branch\"]").on("click", function(d, i){ 
+		b_sort();
+		d3.select(this).attr("class", "checked");
+		d3.select("#author").attr("class", "");
+	});
+	d3.select("input[value=\"author\"]").on("click", function(d, i){ 
+		a_sort();
+		d3.select(this).attr("class", "checked");
+		d3.select("#branch").attr("class", "");
+	});
+
+	// build the arrow.
+	display.append("svg:defs").selectAll("marker")
+	.data(["end"])      // Different link/path types can be defined here
+	.enter().append("svg:marker")    // This section adds in the arrows
+	.attr("id", String)
+	.attr("viewBox", "0 -5 10 10")
+	.attr("refX", 15)
+	.attr("refY", -1.5)
+	.attr("markerWidth", 6)
+	.attr("markerHeight", 6)
+	.attr("orient", "auto")
+	.append("svg:path")
+	.attr("d", "M0,-5L10,0L0,5");
+
+	//adds link lines
+	var link = display.selectAll(".link")
+			.data(graph.links)
+			.enter().append("path")
+			.attr("class", "link");
+	
+	//Adds marker-end to link lines
+	link.attr("marker-end", "url(#end)");
+
+	//Adds selects node, adds to a g
+	var node = display.selectAll(".node")
+			.data(graph.nodes)
+			.enter()
+			.append("g").attr("class", "node");
+
+	//Adds circles for nodes
+	node.append("circle")
+		.attr("r", 5)
+		.attr("fill", function(d) {
+			return fill(d.branch);
+		})
+		.on("mouseover", function(d) {
+			d3.selectAll("circle").attr("class", "hover");
+			d3.select(this).attr("class", "target");
+			d3.select(this).attr("fill", "red");
+			
+			//Get this bar's x/y values, then augment for the tooltip
+			var xPosition = parseFloat(d.x+15) ;
+			var yPosition = parseFloat(d.y+45) ;
+
+			//Update the tooltip position and value
+			d3.select("#tooltip")
+				.style("left", xPosition + "px")
+				.style("top", yPosition + "px")
+				.select("#value")
+				.text(d.commit.author.name);
+			d3.select("#title")
+				.text(d.branch)
+			
+			//Show the tooltip
+			d3.select("#tooltip").classed("hidden", false);
+		})
+
+		.on("mouseout", function(d){
+			d3.selectAll("circle").attr("class", "");
+			d3.select(this).attr("fill", function(d) {
+				return fill(d.branch);
+			});
+		
+			//Hide the tooltip
+			d3.select("#tooltip").classed("hidden", true);
+		})
 
 force_layout();
 line_layout();

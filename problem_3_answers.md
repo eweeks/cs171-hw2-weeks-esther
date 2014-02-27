@@ -66,12 +66,12 @@ an overview of that repository.
 	sorting options, this will allow the viewer to adjust the data to better see the 
 	connections they are most interested in. Sorting options could include:
 	 author:
-	 	already doing, but could sort by most active, least active, or alphabetical
+	 	Could sort by most active, least active, or alphabetical
 	 branch:
-	  already doing, but could sort by time, most recent, oldest
+	  	Could sort by time, most recent, oldest
 	 Both author and branch could also be sorted by most active and least active.
 	 
-	 In heling to keep the graph cleaner and less cluttered with larger data sets,
+	 In helping to keep the graph cleaner and less cluttered with larger data sets,
 	 a branches commits could be shown only on hover. This way if a viewer was interested
 	 in viewing more detail on a particular branch they still could do so easily, but it 
 	 would clean up the view otherwise. 
@@ -80,7 +80,7 @@ an overview of that repository.
 	 screen. This could allow for more of the data to be viewed at once and thus give a
 	 better overview of trends. 
 	 
-	Other smaller items come to mind, such as showing the amount of activity on a branch
+	Other items come to mind, such as showing the amount of activity on a branch
 	at a glance, perhaps by making the lines thicker if there are more commits.  It also
 	would be nice if the categories (author, or branch name) would stay stationary, while
 	the graph can still scroll. This way if you are looking at data at the bottom/end of 
