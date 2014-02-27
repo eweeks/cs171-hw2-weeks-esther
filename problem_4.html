@@ -332,191 +332,175 @@ function map (){
 		graph_update(500);
 	}
 
+	//function for sorting by author
 	function a_sort(){
 		x_sort();
 		var s = d3.select(".branches").selectAll("text").data(authors.author);
 
 		s.enter()
-		.append("text");
+			.append("text");
 
 		s.exit()
-		.remove();
-    
-    s.text(function(d, i) { 
-    	return d; })
-    .attr("x", function(d, i) { 
-    	//console.log(d);
-    	if(i==0){
-    		return (width/authors.author.length)*i+padding;
-    	}else{
-    		return (width/authors.author.length)*i;
-    	}
-    })
-    .attr("y", function(d, i){
-    	return  padding;
-    })
-    .attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
-    
-    trial();
-}
+			.remove();
 
-function b_sort(){
-	x_sort();
-	var s = d3.select(".branches").selectAll("text").data(names.name);
+		s.text(function(d, i) { 
+			return d; })
+		.attr("x", function(d, i) { 
+			if(i==0){
+				return (width/authors.author.length)*i+padding;
+			}else{
+				return (width/authors.author.length)*i;
+			}
+		})
+		.attr("y", function(d, i){
+			return  padding;
+		})
+		.attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
+		trial();
+	}
 
-    s.enter()
-	.append("text");
-    
-    s.exit()
-    .remove();
-    
-    s.text(function(d, i) { 
-    	return d; })
-    .attr("x", function(d, i) { 
-    	//console.log(d);
-    	if(i==0){
-    		return ((width/names.name.length)*i+padding)+5;
-    	}else{
-    		return ((width/names.name.length)*i)+5;
-    	}
-    })
-    .attr("y", function(d, i){
-    	return  padding;
-    })
-     .attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
-    
-    trial();
+	//function for sorting by branch
+	function b_sort(){
+		x_sort();
+		var s = d3.select(".branches").selectAll("text").data(names.name);
+		
+		s.enter()
+			.append("text");
+		
+		s.exit()
+			.remove();
 
-}
+		s.text(function(d, i) { 
+			return d; })
+		.attr("x", function(d, i) { 
+			if(i==0){
+				return ((width/names.name.length)*padding)+5;
+			}else{
+				return ((width/names.name.length)*i)+5;
+			}
+		})
+		.attr("y", function(d, i){
+			return  padding;
+		})
+		.attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
+		
+		trial();
 
-//scale for lines
-var lScale = d3.scale.linear()
-			.domain([ 0, d3.max(names.count) ])
-			.range([2, 7]);
+	}
 
-//scale for node sizes
-var nScale = d3.scale.linear()
-			.domain([ 0, d3.max(authors.count) ])
-			.range([3, 9]);
+	//scale for line widths, based on number of commits
+	var lScale = d3.scale.linear()
+		.domain([ 0, d3.max(names.count) ])
+		.range([2, 7]);
 
-function graph_update(delay) {
-	
-	      
-var lineS=  d3.svg.line()
+	//scale for node sizes
+	var nScale = d3.scale.linear()
+		.domain([ 0, d3.max(authors.count) ])
+		.range([3, 9]);
+
+	//Updates graph
+	function graph_update(delay) {
+		
+		var lineS=  d3.svg.line()
 			.x(function(d) { return d.x; })
 			.y(function(d) { return d.y; })
 			.interpolate("linear"); 
 
-var lineZ= d3.svg.line()
+		var lineZ= d3.svg.line()
 			.x(function(d) { return d.x; })
 			.y(function(d) { return d.y; })
 			.interpolate("step-before");
 			
- link.transition().duration(delay)
-      .attr("x1", function(d) { return d.target.x; })
-      .attr("y1", function(d) { return d.target.y; })
-      .attr("x2", function(d) { return d.source.x; })
-      .attr("y2", function(d) { return d.source.y; })
-	  .attr("stroke", function(d, i){
-			return fill(d.source.branch);
-		});
+		link.transition().duration(delay)
+			.attr("x1", function(d) { return d.target.x; })
+			.attr("y1", function(d) { return d.target.y; })
+			.attr("x2", function(d) { return d.source.x; })
+			.attr("y2", function(d) { return d.source.y; })
+			.attr("stroke", function(d, i){
+				return fill(d.source.branch);
+			});
 	 
-			
-if(document.getElementById("branch").checked == true){  
- 
-      link.attr("d", function(d){
-      			//console.log(d.target.branch);
-      	  //if(document.getElementById("branch").checked == true){
-      		//	console.log("1");
-      			if(d.target.branch == d.source.branch){
-      				return lineS([{x:d.target.x, y:d.target.y},  
-					{x:d.source.x, y:d.source.y} ]);
+		if(document.getElementById("branch").checked == true){  
+			link.attr("d", function(d){
+				if(d.target.branch == d.source.branch){
+					return lineS([{x:d.target.x, y:d.target.y},  
+						{x:d.source.x, y:d.source.y} ]);
 				}else{
 					return lineZ([{x:d.target.x, y:d.target.y}, 
-								{x:d.source.x, y:d.source.y} ]);
+						{x:d.source.x, y:d.source.y} ]);
 				}
-		}).attr("stroke-width", function(d, i) {
-			if(d.target.branch == d.source.branch){
-				var s;
-				names.name.map(function(e, j){
+			}).attr("stroke-width", function(d, i) {
+				if(d.target.branch == d.source.branch){
+					var s;
+					names.name.map(function(e, j){
 						if(d.source.branch == e){
 							s=j;
 						}
-				});
+					});
 				
-				var r=names.count[s];
-				//console.log(r);
-
-				return lScale(r);
-			}else{
-				return "1px";
-			}
+					var r=names.count[s];
+					return lScale(r);
+				}else{
+					return "1px";
+				}
 			}) 
 			.attr("marker-end", function(d, i){
-			if(d.target.branch != d.source.branch){
-				return "url(#end)";
-			}else{
-				return "";
-			}
-		})
-		.style("stroke-dasharray", function(d, i){
-			if(d.target.branch != d.source.branch){
-				return (3, 3);
-			}else{
-				return "";
-			}
-		});
-
- }else{
-      link.attr("d", function(d){
-      		if(d.target.commit.author.name == d.source.commit.author.name){
-      				return lineS([{x:d.target.x, y:d.target.y},  
-					{x:d.source.x, y:d.source.y} ]);
-			}else{
-				return lineZ([{x:d.target.x, y:d.target.y}, 
+				if(d.target.branch != d.source.branch){
+					return "url(#end)";
+				}else{
+					return "";
+				}
+			})
+			.style("stroke-dasharray", function(d, i){
+				if(d.target.branch != d.source.branch){
+					return (3, 3);
+				}else{
+					return "";
+				}
+			});
+		}else{
+			link.attr("d", function(d){
+				if(d.target.commit.author.name == d.source.commit.author.name){
+						return lineS([{x:d.target.x, y:d.target.y},  
 						{x:d.source.x, y:d.source.y} ]);
-				
-			}
-		}).attr("stroke-width", function(d, i){
-			if(d.target.commit.author.name == d.source.commit.author.name){
-				var s;
-				//console.log(d);
-				authors.author.map(function(e, j){
+				}else{
+						return lineZ([{x:d.target.x, y:d.target.y}, 
+						{x:d.source.x, y:d.source.y} ]);
+				}
+			}).attr("stroke-width", function(d, i){
+				if(d.target.commit.author.name == d.source.commit.author.name){
+					var s;
+					authors.author.map(function(e, j){
 						if(d.source.commit.author.name == e || d.target.commit.author.name == e ){
 							s=j;
 						}
-				});
-				
-				var r=authors.count[s];
-				//console.log(r);
-
-				return nScale(r);
-			}else{
-				return "1px";
-			}
-		
-		})
-		 .attr("marker-end", function(d, i){
-			if(d.target.commit.author.name != d.source.commit.author.name){
-				return "url(#end)";
-			}else{
-				return "";
-			}
-		})
-		.style("stroke-dasharray", function(d, i){
-			if(d.target.commit.author.name != d.source.commit.author.name){
-				return (3, 3);
-			}else{
-				return "";
-			}
-		});
-		
- }
-  node.transition().duration(delay)
-      .attr("transform", function(d) { 
-        return "translate("+d.x+","+d.y+")"; 
-      });
-}
+					});
+					var r=authors.count[s];
+					return nScale(r);
+				}else{
+					return "1px";
+				}
+			})
+			.attr("marker-end", function(d, i){
+				if(d.target.commit.author.name != d.source.commit.author.name){
+					return "url(#end)";
+				}else{
+					return "";
+				}
+			})
+			.style("stroke-dasharray", function(d, i){
+				if(d.target.commit.author.name != d.source.commit.author.name){
+					return (3, 3);
+				}else{
+					return "";
+				}
+			});
+		}
+		node.transition().duration(delay)
+			.attr("transform", function(d) { 
+				return "translate("+d.x+","+d.y+")"; 
+			});
+	}
 
 d3.select("input[value=\"linear\"]").on("click", line_layout );
 d3.select("input[value=\"time\"]").on("click", time);
