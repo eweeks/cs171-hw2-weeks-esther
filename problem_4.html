@@ -1,91 +1,85 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>Homework 2 Graph</title>
+  <!DOCTYPE html>
+  <meta charset="utf-8">
+  <title>Homework 2 Graph</title>
 <style>
   .link {
-    stroke: gray;
-    stroke-width: 1.5px;
+	stroke: gray;
+	stroke-width: 1.5px;
   }
   
   .group{
-  	//stroke: purple;
-  	//stroke-width: 2px;
-  	fill: none;
+	fill: none;
   }
 
   .node {
-    /*fill: #66CC66;*/
-    stroke: #000;
-    stroke-width: 1px;
+	stroke: #000;
+	stroke-width: 1px;
   }
 
   .node:hover {
-    fill: red;
+	fill: red;
   }
-  
-body {
+
+  body {
 	margin-top: 0;
 }
 
-#stay {
+  #stay {
 	fill: white;
 }
 
-#buttons svg {
+  #buttons svg {
 	background-color: black;
-
 }
-  
+
   .target{
-  	stroke-opacity: 1;
-  	fill-opacity: 1;
+	stroke-opacity: 1;
+	fill-opacity: 1;
   }
   
   #buttons{
-  	position: fixed;
-  	background: white;
-  	margin: 0;
-  	padding-top: 0.8em;
+	position: fixed;
+	background: white;
+	margin: 0;
+	padding-top: 0.8em;
   }
   
   .display{
-  	margin-top: 100px;
+	margin-top: 100px;
   }
   
   #tooltip {
-        position: absolute;
-        width: 200px;
-        height: 80px;
-        padding: 5px;
-        background-color: white;
-        -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-        border-radius: 10px;
-        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-        pointer-events: none;
-}
+	position: absolute;
+	width: 400px;
+	height: 100px;
+	padding: 5px;
+	background-color: white;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	pointer-events: none;
+  }
 
-#tooltip.hidden {
-        display: none;
-}
-  
-  
+  #tooltip.hidden {
+	 display: none;
+  }
+
   path.link {
-  	fill: none;
-  	stroke: #666;
-  	stroke-width: 1.5px;
-}
+	fill: none;
+	stroke: #666;
+	stroke-width: 1.5px;
+  }
 
-form {
+  form {
 	margin-bottom: 14px;
-	}
+  }
 
-#chart {
+  #chart {
 	margin-bottom: 6em;
-}
-
+  }
 
 </style>
 <body>
@@ -93,6 +87,7 @@ form {
  <div id="tooltip" class="hidden">
  	<p>Branch: <span id="title"></span></p>
     <p>Author: <span id="value">100</span></p>
+    <p>Date: <span id="date"></span></p>
 </div>
 
   <div id="buttons">
@@ -241,7 +236,7 @@ graph.nodes.map(function(d, i){
 
 }
 
-console.log(graph);
+//console.log(graph);
 
 // Generate the force layout
 var force = d3.layout.force()
@@ -273,18 +268,18 @@ var min = d3.min(graph.nodes, function(d){
 	return d.date;
 });
 
-console.log(min);
+//console.log(min);
 
 var max = d3.max(graph.nodes, function(d){
 	return d.date;
 });
-console.log(max);
+//console.log(max);
 var tScale = d3.time.scale()
 			.domain([min, max])
 			.range([250, height])
 			.clamp();
 			
-console.log(height);
+//console.log(height);
 			
 function time(){
 	graph.nodes.forEach(function(d, i) {
@@ -313,7 +308,7 @@ authors.author.map(
 	authors.count.push(many);	
 });
 
-console.log(authors);
+//console.log(authors);
 
 
 function line_layout() {
@@ -433,7 +428,7 @@ var lScale = d3.scale.linear()
 //scale for node sizes
 var nScale = d3.scale.linear()
 			.domain([ 0, d3.max(authors.count) ])
-			.range([3, 10]);
+			.range([3, 9]);
 
 //var m = d3.max(names.count)
 //console.log(lScale(100));
@@ -519,7 +514,7 @@ if(document.getElementById("branch").checked == true){
 		}).attr("stroke-width", function(d, i){
 			if(d.target.commit.author.name == d.source.commit.author.name){
 				var s;
-				console.log(d);
+				//console.log(d);
 				authors.author.map(function(e, j){
 						if(d.source.commit.author.name == e || d.target.commit.author.name == e ){
 							s=j;
@@ -720,6 +715,9 @@ node.append("circle")
    	//Get this circles position for tooltip
 	var xPosition = parseFloat(d.x+10) ;
 	var yPosition = parseFloat(d.y) ;
+	
+	var time= new Date(d.date);
+	var tx = time.toString();
 
 	//Update the tooltip position and value
 d3.select("#tooltip")
@@ -728,6 +726,12 @@ d3.select("#tooltip")
   .select("#value")
   .text(d.commit.author.name);
   
+  
+  
+  d3.select("#date")
+  	.text(tx);
+  	
+  	
   d3.select("#title")
 	.text(d.branch)
 //Show the tooltip
