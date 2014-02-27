@@ -531,135 +531,111 @@ function map (){
 		.attr("d", "M0,-5L10,0L0,5");
 
 
-var line=  d3.svg.line()
+	var line=  d3.svg.line()
 			.x(function(d) { return d.x; })
 			.y(function(d) { return d.y; })
 			.interpolate("linear");    
-     
-var link = display.selectAll(".link")
-            .data(graph.links)
-            .enter().append("path")
-            //.attr("d", line(lineData))
-            .attr("class", "link")
-            .on("mouseover", function(d) {
-            	
-            		var c = d.source.branch;
-   					d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5")
-   					.attr("fill", function(d) {
-						return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
-			
-   					});
-   				
-            
-            })
-            .on("mouseout", function(d){
-            	if(document.getElementById("branch").checked == true){ 
-            		var c = d.source.branch;
-   					d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0")
-   					.attr("fill", function(d) {
-							return fill(d.branch);
-					});
-   				}else{
-   					var c = d.source.branch;
-   					d3.selectAll("."+c)
-   					.attr("fill", function(d) {
-							return fill(d.branch);
-					});
-   				}
-            });
-             
-        
-trial();    
 
-//scale for squares
-var sScale = d3.scale.linear()
-	.domain([ 0, d3.max(authors.count) ])
-	.range([4, 10]);
-//console.log(nScale(40));
-			
-function trial(){
+	var link = display.selectAll(".link")
+		.data(graph.links)
+		.enter().append("path")
+		.attr("class", "link")
+		.on("mouseover", function(d) {
+			var c = d.source.branch;
+			d3.selectAll("."+c).attr("style", "fill-opacity: 1; stroke-opacity: .5")
+				.attr("fill", function(d) {
+					return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
+				});
+		})
+		.on("mouseout", function(d){
+			if(document.getElementById("branch").checked == true){ 
+				var c = d.source.branch;
+				d3.selectAll("."+c).attr("style", "fill-opacity: 0; stroke-opacity: 0")
+					.attr("fill", function(d) {
+						return fill(d.branch);
+					});
+			}else{
+				var c = d.source.branch;
+				d3.selectAll("."+c)
+					.attr("fill", function(d) {
+							return fill(d.branch);
+					});
+			}
+		});
+
+	trial();
+
+	//scale for squares
+	var sScale = d3.scale.linear()
+		.domain([ 0, d3.max(authors.count) ])
+		.range([4, 10]);
+
+	function trial(){
 		if(document.getElementById("branch").checked == true){
-		link.attr("class", "group");
-		 
-		 d3.selectAll("circle")
-		.attr("style", "fill-opacity: 0; stroke-opacity: 0")
-		.attr("r", 6);
-	}else{
-	//set different class to adjust styles specific to sorting by author
-
-		link.attr("class", "group")
-		//.attr("stroke-width", "2px");
-		
-		
-		d3.selectAll("circle")
-		//.attr("ry", 0)
-		//.attr("rx", 0)
-		.attr("style", "fill-opacity: 1; stroke-opacity: 1")
-		.attr("r", function(d, i){
-				var s;
+			link.attr("class", "group");
+			d3.selectAll("circle")
+				.attr("style", "fill-opacity: 0; stroke-opacity: 0")
+				.attr("r", 6);
+		}else{
+		//set different class to adjust styles specific to sorting by author
+			link.attr("class", "group")
+			d3.selectAll("circle")
+				.attr("style", "fill-opacity: 1; stroke-opacity: 1")
+				.attr("r", function(d, i){
+					var s;
 					authors.author.map(function(e, j){
 						if(d.commit.author.name == e){
 							s=j;
 						}
 					});
-				
 					var r=authors.count[s];
 					return sScale(r);
-			});
+				});
 		
+		}
 	}
-}
 
+	var node = display.selectAll(".node")
+		.data(graph.nodes)
+		.enter()
+		.append("g").attr("class", "node");
 
-var node = display.selectAll(".node")
-              .data(graph.nodes)
-            .enter()
-              .append("g").attr("class", "node");
-
-node.append("circle")
-	.attr("r", 6)
-    .attr("fill", function(d) {
+	node.append("circle")
+		.attr("r", 6)
+		.attr("fill", function(d) {
 			return fill(d.branch);
-			
-   })
-   .attr("class", function(d){
-   		return d.branch;
-   })
-   .attr("style", function(d){
-   		if(document.getElementById("branch").checked == true){ 
-   			   return "fill-opacity: 0; stroke-opacity: 0";
-   		}else{
-   			return "fill-opacity: 1; stroke-opacity: 1"
-   		}
-   })
-   .attr("stroke-width", 0)
+		})
+		.attr("class", function(d){
+			return d.branch;
+		})
+		.attr("style", function(d){
+			if(document.getElementById("branch").checked == true){ 
+				return "fill-opacity: 0; stroke-opacity: 0";
+			}else{
+				return "fill-opacity: 1; stroke-opacity: 1"
+		}
+		})
+		.attr("stroke-width", 0)
 
-   .on("mouseover", function(d) {
-   		//d3.selectAll("circle")//.attr("class", "hover");
-   		//d3.select(this).attr("class", "target");
-   		//if(document.getElementById("branch").checked == true){  
-   		if(document.getElementById("branch").checked == true){
-   			d3.select(this).attr("fill", "red");
-    		d3.select(this).attr("style", "fill-opacity: .8; stroke-opacity: .5");
-   			
-   			var c = d.branch;
-    	d3.selectAll("."+c).attr("style", "fill-opacity: .8; stroke-opacity: .5")
-    	.attr("fill", function(d) {
-			return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
-			
-   		});
-    	
-    	}else{
-    		d3.select(this).attr("fill", "red");
-    			var c = d.branch;
-    	d3.selectAll("."+c)
-    	.attr("fill", function(d) {
-			return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
-			
-   		});
-    	}
-   	
-   	//Get this circles position for tooltip
+		.on("mouseover", function(d) {
+			if(document.getElementById("branch").checked == true){
+				d3.select(this).attr("fill", "red");
+				d3.select(this).attr("style", "fill-opacity: .8; stroke-opacity: .5");
+				var c = d.branch;
+				d3.selectAll("."+c).attr("style", "fill-opacity: .8; stroke-opacity: .5")
+					.attr("fill", function(d) {
+						return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
+					});
+			}else{
+				d3.select(this).attr("fill", "red");
+				var c = d.branch;
+				d3.selectAll("."+c)
+					.attr("fill", function(d) {
+						return d3.rgb(d3.select(this).attr("fill")).brighter(.7);
+					});
+			}
+
+	//Get this circles position for tooltip
 	var xPosition = parseFloat(d.x+10) ;
 	var yPosition = parseFloat(d.y) ;
 	
