@@ -301,56 +301,46 @@ function map (){
 			d.y = yScale(i);
 		});
 		
-		y_sort();
+		x_sort();
 	}
 
+	//Function to sort by either branch or author
+	function x_sort(){
+		graph.nodes.forEach(function(d, i) {
+			if(document.getElementById("branch").checked == true){
+				names.name.forEach(function(e, j){
+					if(graph.nodes[i].branch==e){
+						if(j==0){
+							d.x = (width/names.name.length)*j+padding;
+						}else{
+							d.x = (width/names.name.length)*j;
+						}
+					}
+				})
+			}else {
+				authors.author.forEach(function(e, j){
+					if(graph.nodes[i].commit.author.name==e){
+						if(j==0){
+							d.x = (width/authors.author.length)*j+padding;
+						}else{
+							d.x = (width/authors.author.length)*j;
+						}
+					}
+				});
+			}
+		});
+		graph_update(500);
+	}
 
-function y_sort(){
-  graph.nodes.forEach(function(d, i) {
-    //console.log(graph.nodes[i].commit.author.name);
-    if(document.getElementById("branch").checked == true){
-    	names.name.forEach(function(e, j){
-    		if(graph.nodes[i].branch==e){
-    			if(j==0){
-    				d.x = (width/names.name.length)*j+padding;
-    			}else{
-    			//console.log(e);
-    				d.x = (width/names.name.length)*j;
-    			}
-    		}
-    	
-    	//d.y = (height/2)+30;
-    	})
-    
-    }else {
-    	 authors.author.forEach(function(e, j){
-    		if(graph.nodes[i].commit.author.name==e){
-    			//console.log(e);
-    			if(j==0){
-    				d.x = (width/authors.author.length)*j+padding;
-    			}else{
-    				d.x = (width/authors.author.length)*j;
-    			}
-    			
-    		}
-    	});		
-    }
-   
+	function a_sort(){
+		x_sort();
+		var s = d3.select(".branches").selectAll("text").data(authors.author);
 
-  });
-  graph_update(500);
+		s.enter()
+		.append("text");
 
-}
-
-function a_sort(){
-	y_sort();
-	var s = d3.select(".branches").selectAll("text").data(authors.author);
-
-    s.enter()
-	.append("text");
-    
-    s.exit()
-    .remove();
+		s.exit()
+		.remove();
     
     s.text(function(d, i) { 
     	return d; })
@@ -371,7 +361,7 @@ function a_sort(){
 }
 
 function b_sort(){
-	y_sort();
+	x_sort();
 	var s = d3.select(".branches").selectAll("text").data(names.name);
 
     s.enter()
