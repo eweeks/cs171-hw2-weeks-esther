@@ -531,10 +531,10 @@ function map (){
 		.attr("d", "M0,-5L10,0L0,5");
 
 
-	var line=  d3.svg.line()
+	/*var line=  d3.svg.line()
 			.x(function(d) { return d.x; })
 			.y(function(d) { return d.y; })
-			.interpolate("linear");    
+			.interpolate("linear");*/
 
 	var link = display.selectAll(".link")
 		.data(graph.links)
@@ -565,7 +565,7 @@ function map (){
 
 	trial();
 
-	//scale for squares
+	//scale for shapes
 	var sScale = d3.scale.linear()
 		.domain([ 0, d3.max(authors.count) ])
 		.range([4, 10]);
