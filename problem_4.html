@@ -86,39 +86,40 @@
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
- <div id="tooltip" class="hidden">
- 	<p>Branch: <span id="title"></span></p>
-    <p>Author: <span id="value">100</span></p>
-    <p>Date: <span id="date"></span></p>
+  <div id="tooltip" class="hidden">
+	<p>Branch: <span id="title"></span></p>
+	<p>Author: <span id="value">100</span></p>
+	<p>Date: <span id="date"></span></p>
 </div>
 
   <div id="buttons">
-  <form>
-  Scale:
-    <label><input type="radio" name="scale" value="linear" checked>Linear</label>
-    <label><input type="radio" name="scale" value="time">Time</label>
-  </form>
-  <form>
-  Sort By:
-    <label><input type="radio" name="sort" value="branch" id="branch" checked>Branch</label>
-    <label><input type="radio" name="sort" value="author" id="author">Author</label>
-  </form>
+	<form>
+		Scale:
+		<label><input type="radio" name="scale" value="linear" checked>Linear</label>
+		<label><input type="radio" name="scale" value="time">Time</label>
+	</form>
+	<form>
+		Sort By:
+		<label><input type="radio" name="sort" value="branch" id="branch" checked>Branch</label>
+		<label><input type="radio" name="sort" value="author" id="author">Author</label>
+	</form>
   </div>
-
 <script>
+
+//Set GitHub Repo info here
+var git = "afaqurk/linux-dash";
 
 var width = 1000,
     height = 3000;
 
 var svg = d3.select("body").append("svg")
-            .attr("width", width);
-            
+		.attr("width", width);
+
 var header = d3.select("#buttons").append("svg")
-			.attr("width", width)
-			.attr("height", "150");
+		.attr("width", width)
+		.attr("height", "150");
 
 var fill = d3.scale.category10();
-var git = "afaqurk/linux-dash";
 var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
@@ -128,56 +129,52 @@ var remaining = 1;
 var padding = 30;
 
 //Get Branch Data
-
-
 var branchD = d3.json("https://api.github.com/repos/"+git+"/branches", function(error, data1){
 		data1.map(function(d, i){
-			//if(names.length <= 3){
-				names.name.push(data1[i].name);
-			//}
+			names.name.push(data1[i].name);
 		});
+	
+	//If finished calls commit Data Method
 	if(! --remaining) commitD();
 });
 
+//Get Commit Data
 function commitD(){
-
 	remaining = names.name.length;
 	names.name.forEach(function(d, i){
-	//console.log(d);
-  var dataset = d3.json("https://api.github.com/repos/"+git+"/commits"+"?sha="+d, function(error, data){
+		var dataset = d3.json("https://api.github.com/repos/"+git+"/commits"+"?sha="+d,
+			 function(error, data){
 
-data.map(function(e, j) {  
-  graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names.name[i],
-  date: Date.parse(data[j].commit.author.date),
-  parents: data[j].parents } );
-}); 
+			data.map(function(e, j) {  
+				graph.nodes.push( { sha: data[j].sha, commit: data[j].commit, branch: names.name[i],
+				date: Date.parse(data[j].commit.author.date),
+				parents: data[j].parents } );
+			}); 
 
+			graph.nodes.map(function(d, i){
+				graph.nodes.sort(function(a, b){
+					return d3.ascending(a.date, b.date);
+				});
+			});
 
-graph.nodes.map(function(d, i){
-	graph.nodes.sort(function(a, b){
-		return d3.ascending(a.date, b.date);
-	});
-});
+			data.map(function(d, i){
+				data[i].parents.map(function(e, j) {
+					parents.parents.push({"parents":e });
+					parents.source.push({"source":data[i].sha});
+				})
+			});
 
-data.map(function(d, i){
-	data[i].parents.map(function(e, j) {
-		parents.parents.push({"parents":e });
-		parents.source.push({"source":data[i].sha});
+			//sets height relative to number of commits
+			height=(graph.nodes.length)*20;
+		
+			//now set svg with height
+			svg.attr("height", height)
+				.attr("id", "chart");
+
+			//When done, calls map function
+			if(! --remaining) map();
+		});
 	})
-})
-
-	//sets height relative to number of commits
-	height=(graph.nodes.length)*20;
-	
-	//now set svg with height
-	svg 
-    	.attr("height", height)
-        .attr("id", "chart");
-            
- if(! --remaining) map();
-});
-})
-
 }
 
 
