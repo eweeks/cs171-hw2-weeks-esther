@@ -111,9 +111,9 @@
 //CS171/CS171.github.io
 //mbostock/d3
 //Snugug/north
-//
+//afaqurk/linux-dash
 //Set GitHub Repo info here
-var git = "afaqurk/linux-dash";
+var git = "mbostock/d3";
 
 var width = 1000,
     height = 3000;
@@ -123,7 +123,7 @@ var svg = d3.select("body").append("svg")
 
 var header = d3.select("#buttons").append("svg")
 		.attr("width", width)
-		.attr("height", "150");
+		.attr("height", "200");
 
 var fill = d3.scale.category10();
 var graph = {nodes:[], links:[]};
@@ -132,7 +132,7 @@ var nb_nodes = 100, nb_cat = 10;
 var names = {name:[], count:[] };
 var authors = {author:[], count:[]};
 var remaining = 1;
-var padding = 30;
+var padding = 20;
 
 //Get Branch Data
 var branchD = d3.json("https://api.github.com/repos/"+git+"/branches", function(error, data1){
@@ -222,7 +222,7 @@ function map (){
 
 	set_links();
 
-	//sets up links	
+	//sets up links
 	function set_links(){
 		graph.nodes.map(function(d, i){
 			graph.nodes[i].parents.map(function(l, m){
@@ -258,7 +258,7 @@ function map (){
 	//Y Scale
 	var yScale = d3.scale.ordinal()
 		.domain(d3.range(graph.nodes.length))
-		.rangeRoundBands([250, height], 1);
+		.rangeRoundBands([300, height], 1);
 
 	//Min and Max for time scale
 	var min = d3.min(graph.nodes, function(d){
@@ -272,7 +272,7 @@ function map (){
 	//Time Scale
 	var tScale = d3.time.scale()
 		.domain([min, max])
-		.range([250, height-padding]);
+		.range([300, height-padding]);
 			
 	//function to set time scale
 	function time(){
@@ -353,9 +353,9 @@ function map (){
 			return d; })
 		.attr("x", function(d, i) { 
 			if(i==0){
-				return (width/authors.author.length)*i+padding;
+				return ((width/authors.author.length)*i+padding);
 			}else{
-				return (width/authors.author.length)*i;
+				return ((width/authors.author.length)*i);
 			}
 		})
 		.attr("y", function(d, i){
@@ -380,9 +380,9 @@ function map (){
 			return d; })
 		.attr("x", function(d, i) { 
 			if(i==0){
-				return ((width/names.name.length)*i+padding)+5;
+				return ((width/names.name.length)*i+padding);
 			}else{
-				return ((width/names.name.length)*i)+5;
+				return ((width/names.name.length)*i);
 			}
 		})
 		.attr("y", function(d, i){
