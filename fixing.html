@@ -54,8 +54,8 @@ body {
   
   #tooltip {
         position: absolute;
-        width: 400px;
-        height: 100px;
+        width: 200px;
+        height: 80px;
         padding: 5px;
         background-color: white;
         -webkit-border-radius: 10px;
@@ -92,8 +92,7 @@ form {
 <script src="http://d3js.org/d3.v3.min.js"></script>
  <div id="tooltip" class="hidden">
  	<p>Branch: <span id="title"></span></p>
-    <p>Author: <span id="value">100</span></p>
-    <p>Date: <span id="date"></span></p>
+        <p>Author: <span id="value">100</span></p>
 </div>
 
   <div id="buttons">
@@ -122,7 +121,7 @@ var header = d3.select("#buttons").append("svg")
 			.attr("height", "150");
 
 var fill = d3.scale.category10();
-var git = "afaqurk/linux-dash";
+var git = "Caleydo/caleydo";
 var graph = {nodes:[], links:[]};
 var parents ={parents:[], source:[]};
 var nb_nodes = 100, nb_cat = 10;
@@ -242,7 +241,7 @@ graph.nodes.map(function(d, i){
 
 }
 
-//console.log(graph);
+console.log(graph);
 
 // Generate the force layout
 var force = d3.layout.force()
@@ -274,17 +273,18 @@ var min = d3.min(graph.nodes, function(d){
 	return d.date;
 });
 
-//console.log(min);
+console.log(min);
 
 var max = d3.max(graph.nodes, function(d){
 	return d.date;
 });
-//console.log(max);
+console.log(max);
 var tScale = d3.time.scale()
 			.domain([min, max])
-			.range([250, height]);
+			.range([250, height])
+			//.clamp();
 			
-//console.log(height);
+console.log(height);
 			
 function time(){
 	graph.nodes.forEach(function(d, i) {
@@ -313,7 +313,7 @@ authors.author.map(
 	authors.count.push(many);	
 });
 
-//console.log(authors);
+console.log(authors);
 
 
 function line_layout() {
@@ -433,7 +433,7 @@ var lScale = d3.scale.linear()
 //scale for node sizes
 var nScale = d3.scale.linear()
 			.domain([ 0, d3.max(authors.count) ])
-			.range([3, 9]);
+			.range([3, 10]);
 
 //var m = d3.max(names.count)
 //console.log(lScale(100));
@@ -519,7 +519,7 @@ if(document.getElementById("branch").checked == true){
 		}).attr("stroke-width", function(d, i){
 			if(d.target.commit.author.name == d.source.commit.author.name){
 				var s;
-				//console.log(d);
+				console.log(d);
 				authors.author.map(function(e, j){
 						if(d.source.commit.author.name == e || d.target.commit.author.name == e ){
 							s=j;
@@ -720,9 +720,6 @@ node.append("circle")
    	//Get this circles position for tooltip
 	var xPosition = parseFloat(d.x+10) ;
 	var yPosition = parseFloat(d.y) ;
-	
-	var time= new Date(d.date);
-	var tx = time.toString();
 
 	//Update the tooltip position and value
 d3.select("#tooltip")
@@ -731,12 +728,6 @@ d3.select("#tooltip")
   .select("#value")
   .text(d.commit.author.name);
   
-  
-  
-  d3.select("#date")
-  	.text(tx);
-  	
-  	
   d3.select("#title")
 	.text(d.branch)
 //Show the tooltip
