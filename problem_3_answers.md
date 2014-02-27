@@ -1,3 +1,5 @@
+Esther Weeks Problem 3 - Homework 2 (Plus design paragraph)
+
 1. I think the ideal Network Graph would need to address or have the option to address 
 a variety of tasks. As the networks and how they are used varies a lot on GitHub,
 the most successful graph would allow for some flexibility in layout that the user can 
@@ -85,3 +87,22 @@ an overview of that repository.
 	would be nice if the categories (author, or branch name) would stay stationary, while
 	the graph can still scroll. This way if you are looking at data at the bottom/end of 
 	the chart you can still see the category names. 
+	
+	Design Sketch Paragraph:
+		In addressing the problem of clutter with larger data sets, my design has a vertical
+		orientation instead of a horizontial one. This is easier to scroll through for
+		a viewer and allows more of the data to be shown at one time. Ideally
+		the view will expand to fit the data set. Also to eliminate some of the clutter
+        in the graph, nodes or commits will only show up when the viewer hovers over the
+        branch.
+        My design focuses on the big picture first and then has more details and information
+        available upon exploration. I wanted to show the connections while still maintaining
+        readability. Color and lines will be used to represent the connections themselves.
+        Lines will show the branches, and vary in weight based on how many commits are
+        made on each branch. It might by possible to create an effect similar to a Sankey 
+        diagram by doing this. Other lines will show the connections to other branches. These
+        will be differentiated from the branch lines by weight. Shapes will be used to show
+        the commits themselves, either circles or squares. 
+        Ideally, my design would have multiple sorting features, allowing the viewer to see
+        the data in multiple views and thus adjust to the varying users and their different
+        work methods on GitHub. 
