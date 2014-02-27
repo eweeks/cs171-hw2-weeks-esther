@@ -356,7 +356,7 @@ function map (){
 			return  padding;
 		})
 		.attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
-		trial();
+		shape();
 	}
 
 	//function for sorting by branch
@@ -384,7 +384,7 @@ function map (){
 		})
 		.attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
 		
-		trial();
+		shape();
 
 	}
 
@@ -530,12 +530,8 @@ function map (){
 		.append("svg:path")
 		.attr("d", "M0,-5L10,0L0,5");
 
-
-	/*var line=  d3.svg.line()
-			.x(function(d) { return d.x; })
-			.y(function(d) { return d.y; })
-			.interpolate("linear");*/
-
+	
+	//Adds links to view and adds attrs, listeners
 	var link = display.selectAll(".link")
 		.data(graph.links)
 		.enter().append("path")
@@ -563,21 +559,21 @@ function map (){
 			}
 		});
 
-	trial();
+	shape();
 
 	//scale for shapes
 	var sScale = d3.scale.linear()
 		.domain([ 0, d3.max(authors.count) ])
 		.range([4, 10]);
 
-	function trial(){
+	//sets styles of shapes, and for author sort, size of shape
+	function shape(){
 		if(document.getElementById("branch").checked == true){
 			link.attr("class", "group");
 			d3.selectAll("circle")
 				.attr("style", "fill-opacity: 0; stroke-opacity: 0")
 				.attr("r", 6);
 		}else{
-		//set different class to adjust styles specific to sorting by author
 			link.attr("class", "group")
 			d3.selectAll("circle")
 				.attr("style", "fill-opacity: 1; stroke-opacity: 1")
@@ -595,11 +591,13 @@ function map (){
 		}
 	}
 
+	//adds nodes
 	var node = display.selectAll(".node")
 		.data(graph.nodes)
 		.enter()
 		.append("g").attr("class", "node");
-
+	
+	//adds circles attr listeners
 	node.append("circle")
 		.attr("r", 6)
 		.attr("fill", function(d) {
