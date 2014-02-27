@@ -216,7 +216,6 @@ function map (){
 		var display = svg.append("g").attr("class", "display");
 
 set_links();
-//console.log(graph);
 
 function set_links(){
 	//sets up links
@@ -272,7 +271,7 @@ var max = d3.max(graph.nodes, function(d){
 //console.log(max);
 var tScale = d3.time.scale()
 			.domain([min, max])
-			.range([250, height]);
+			.range([250, height-padding]);
 			
 //console.log(height);
 			
@@ -383,7 +382,7 @@ function a_sort(){
     })
     .attr("style", "writing-mode: tb; glyph-orientation-vertical: 90");
     
-    trial();	
+    trial();
 }
 
 function b_sort(){
@@ -425,9 +424,6 @@ var nScale = d3.scale.linear()
 			.domain([ 0, d3.max(authors.count) ])
 			.range([3, 9]);
 
-//var m = d3.max(names.count)
-//console.log(lScale(100));
-
 function graph_update(delay) {
 	
 	      
@@ -464,7 +460,7 @@ if(document.getElementById("branch").checked == true){
 					return lineZ([{x:d.target.x, y:d.target.y}, 
 								{x:d.source.x, y:d.source.y} ]);
 				}
-		  }).attr("stroke-width", function(d, i) {
+		}).attr("stroke-width", function(d, i) {
 			if(d.target.branch == d.source.branch){
 				var s;
 				names.name.map(function(e, j){
